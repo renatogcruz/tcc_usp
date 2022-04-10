@@ -1,1 +1,7 @@
 ClustGeo - https://cran.r-project.org/web/packages/ClustGeo/vignettes/intro_ClustGeo.html
+
+Censo Demográfico
+https://www.ibge.gov.br/estatisticas/sociais/administracao-publica-e-participacao-politica/9663-censo-demografico-2000.html?=&t=destaques
+
+Censo 2010
+https://censo2010.ibge.gov.br/resultados.html
