@@ -3,3 +3,6 @@ https://journals.openedition.org/cybergeo/27035
 
 calcular adequadamente as distâncias entre os pontos lat / lon
 https://qastack.com.br/datascience/761/clustering-geo-location-coordinates-lat-long-pairs
+
+Agregados_por_Setores_Censitarios
+https://ftp.ibge.gov.br/Censos/Censo_Demografico_2010/Resultados_do_Universo/Agregados_por_Setores_Censitarios/
