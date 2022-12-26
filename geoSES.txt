@@ -1,0 +1,7 @@
+GeoSES - Índice Socioeconômico do Contexto Geográfico para Estudos em Saúde (GeoSES)
+
+https://dados.gov.br/dataset/geoses
+
+GeoSES-IM - cálculo dos índices em nível intramunicipal. Aqui, todo município com três ou mais áreas de ponderação possui um índice definido para cada região. O diferencial é destacar as diferenças e semelhanças socioeconômicas dentro do mesmo espaço urbano. Novamente, não faz sentido comparar uma área de ponderação de uma cidade com a de outra, pois os dados utilizados para compor o índice são distintos. Observa-se também que não há uma relação direta entre o índice de cada área de ponderação com o índice único do município (obtido ou pelo GeoSES-UF ou pelo GeoSES-BR). Dados disponíveis em arquivos distintos, um para cada município. Aqueles sem informação indicam que o município possui menos de três áreas de ponderação, portanto não possui o GeoSES-IM definido.
+
+scores.zip - https://dados.gov.br/dataset/geoses/resource/9ab6d65a-8d21-4e06-ac2f-45b606f197c9
