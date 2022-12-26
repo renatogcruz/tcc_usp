@@ -1,14 +1,18 @@
 
 # =====================================
-# Código: funções auxiliares
-# Especialização em Estatística, 2022/2
-# Essa versão: 09/11/2022      
+# Funções auxiliares
+# 
+# Essa versão: 2022/12/26     
 # =====================================
 
-
+# --
 ## cores customizadas para uso com o corrplot
 mat.colors = 
-  colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+  colorRampPalette(c("#BB4444", 
+                     "#EE9988", 
+                     "#FFFFFF", 
+                     "#77AADD", 
+                     "#4477AA"))
 
 
 ## classificando dados em quantis (equidistantes)
