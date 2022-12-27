@@ -38,7 +38,7 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
 
 # --
 ## diretório de trabalho
-setwd("C:/Users/Renato/OneDrive/github/_tcc/pca/analise_preliminar")
+setwd("C:/Users/Renato/OneDrive/github/_tcc/1_pca/analise_preliminar")
 
 # --
 ## carregando funções auxiliares
@@ -149,7 +149,7 @@ corrplot(corr,
 )
 
 # salvando em .png
-dev.print(file = '_out/figures/figCorrPlot_EDUCATION.png',
+dev.print(file = '_out/figures/1_figCorrPlot_EDUCATION.png',
           device = png, width = 1024, height = 768, res = 1.2*72)
 
 
@@ -176,7 +176,7 @@ PCA$loadings[]
 
 # --
 # salvando os resultados em um arquivo de texto
-sink(file = '_out/output/PCA_EDUCATION.txt')
+sink(file = '_out/output/1_PCA_EDUCATION.txt')
 print(summary(PCA))
 cat('\n')
 print(PCA$loadings[])
@@ -191,7 +191,7 @@ abline(h = 1, lty = 2, col="red")
 abline(v = k, lty = 2, col="red")
 
 # salvando em .png
-dev.print(file = '_out/figures/figScreePlot_EDUCATION.png',
+dev.print(file = '_out/figures/1_figScreePlot_EDUCATION.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 # --
@@ -236,7 +236,7 @@ print(p)
 
 
 # salvando em .png
-dev.print(file = '_out/figures/figMap_PCA_EDUCATION.png',
+dev.print(file = '_out/figures/1_figMap_PCA_EDUCATION.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 
@@ -296,7 +296,7 @@ corrplot(corr,
 )
 
 # salvando em .png
-dev.print(file = '_out/figures/figCorrPlot_MOBILITY.png',
+dev.print(file = '_out/figures/2_figCorrPlot_MOBILITY.png',
           device = png, width = 1024, height = 768, res = 1.2*72)
 
 
@@ -322,7 +322,7 @@ summary(PCA)
 PCA$loadings[]
 
 # salvando os resultados em um arquivo de texto
-sink(file = '_out/output/PCA_MOBILITY.txt')
+sink(file = '_out/output/2_PCA_MOBILITY.txt')
 print(summary(PCA))
 cat('\n')
 print(PCA$loadings[])
@@ -337,7 +337,7 @@ abline(h = 1, lty = 2, col="red")
 abline(v = k, lty = 2, col="red")
 
 # salvando em .png
-dev.print(file = '_out/figures/figScreePlot_MOBILITY.png',
+dev.print(file = '_out/figures/2_figScreePlot_MOBILITY.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 # --
@@ -381,7 +381,7 @@ p = ggplot(data = sf.obj) +
 print(p)
 
 # salvando em .png
-dev.print(file = '_out/figures/figMap_PCA_MOBILITY.png',
+dev.print(file = '_out/figures/2_figMap_PCA_MOBILITY.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 
@@ -439,7 +439,7 @@ corrplot(corr,
 )
 
 # salvando em .png
-dev.print(file = '_out/figures/figCorrPlot_POVERTY.png',
+dev.print(file = '_out/figures/3_figCorrPlot_POVERTY.png',
           device = png, width = 1024, height = 768, res = 1.2*72)
 
 
@@ -465,7 +465,7 @@ summary(PCA)
 PCA$loadings[]
 
 # salvando os resultados em um arquivo de texto
-sink(file = '_out/output/PCA_POVERTY.txt')
+sink(file = '_out/output/3_PCA_POVERTY.txt')
 print(summary(PCA))
 cat('\n')
 print(PCA$loadings[])
@@ -481,7 +481,7 @@ abline(v = k, lty = 2, col="red")
 
 
 # salvando em .png
-dev.print(file = '_out/figures/figScreePlot_POVERTY.png',
+dev.print(file = '_out/figures/3_figScreePlot_POVERTY.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 
@@ -526,7 +526,7 @@ p = ggplot(data = sf.obj) +
 print(p)
 
 # salvando em .png
-dev.print(file = '_out/figures/figMap_PCA_POVERTY.png',
+dev.print(file = '_out/figures/3_figMap_PCA_POVERTY.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 
@@ -587,7 +587,7 @@ corrplot(corr,
 )
 
 # salvando em .png
-dev.print(file = '_out/figures/figCorrPlot_DEPRIV.png',
+dev.print(file = '_out/figures/4_figCorrPlot_DEPRIV.png',
           device = png, width = 1024, height = 768, res = 1.2*72)
 
 
@@ -614,7 +614,7 @@ PCA$loadings[]
 
 # --
 # salvando os resultados em um arquivo de texto
-sink(file = '_out/output/PCA_PRIVATION.txt')
+sink(file = '_out/output/4_PCA_PRIVATION.txt')
 print(summary(PCA))
 cat('\n')
 print(PCA$loadings[])
@@ -629,7 +629,7 @@ abline(h = 1, lty = 2, col="red")
 abline(v = k, lty = 2, col="red")
 
 # salvando em .png
-dev.print(file = '_out/figures/figScreePlot_PRIVATION.png',
+dev.print(file = '_out/figures/4_figScreePlot_PRIVATION.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 # --
@@ -673,7 +673,7 @@ p = ggplot(data = sf.obj) +
 print(p)
 
 # salvando em .png
-dev.print(file = '_out/figures/figMap_PCA_PRIVATION.png',
+dev.print(file = '_out/figures/4_figMap_PCA_PRIVATION.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 
@@ -727,7 +727,7 @@ corrplot(corr,
 )
 
 # salvando em .png
-dev.print(file = '_out/figures/figCorrPlot_INCOME.png',
+dev.print(file = '_out/figures/5_figCorrPlot_INCOME.png',
           device = png, width = 1024, height = 768, res = 1.2*72)
 
 
@@ -751,7 +751,7 @@ summary(PCA)
 PCA$loadings[]
 
 # salvando os resultados em um arquivo de texto
-sink(file = '_out/output/PCA_INCOME.txt')
+sink(file = '_out/output/5_PCA_INCOME.txt')
 print(summary(PCA))
 cat('\n')
 print(PCA$loadings[])
@@ -763,7 +763,7 @@ screeplot(PCA, main = 'Scree Plot (dashed line = Kaiser rule)', type = 'l')
 # regra de Kaiser
 abline(h = 1, lty = 2)
 # salvando em .png
-dev.print(file = '_out/figures/figScreePlot_INCOME.png',
+dev.print(file = '_out/figures/5_figScreePlot_INCOME.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 # --
@@ -807,7 +807,7 @@ p = ggplot(data = sf.obj) +
 print(p)
 
 # salvando em .png
-dev.print(file = '_out/figures/figMap_PCA_INCOME.png',
+dev.print(file = '_out/figures/5_figMap_PCA_INCOME.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 
@@ -864,7 +864,7 @@ corrplot(corr,
 )
 
 # salvando em .png
-dev.print(file = '_out/figures/figCorrPlot_WEALTH.png',
+dev.print(file = '_out/figures/6_figCorrPlot_WEALTH.png',
           device = png, width = 1024, height = 768, res = 1.2*72)
 
 
@@ -891,7 +891,7 @@ PCA$loadings[]
 
 # --
 # salvando os resultados em um arquivo de texto
-sink(file = '_out/output/PCA_WEALTH.txt')
+sink(file = '_out/output/6_PCA_WEALTH.txt')
 print(summary(PCA))
 cat('\n')
 print(PCA$loadings[])
@@ -906,7 +906,7 @@ abline(h = 1, lty = 2, col="red")
 abline(v = k, lty = 2, col="red")
 
 # salvando em .png
-dev.print(file = '_out/figures/figScreePlot_WEALTH.png',
+dev.print(file = '_out/figures/6_figScreePlot_WEALTH.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 
@@ -951,7 +951,7 @@ p = ggplot(data = sf.obj) +
 print(p)
 
 # salvando em .png
-dev.print(file = '_out/figures/figMap_PCA_WEALTH.png',
+dev.print(file = '_out/figures/6_figMap_PCA_WEALTH.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 
@@ -1010,7 +1010,7 @@ corrplot(corr,
 )
 
 # salvando em .png
-dev.print(file = '_out/figures/figCorrPlot_SEGREGATION.png',
+dev.print(file = '_out/figures/7_figCorrPlot_SEGREGATION.png',
           device = png, width = 1024, height = 768, res = 1.2*72)
 
 
@@ -1036,7 +1036,7 @@ summary(PCA)
 PCA$loadings[]
 
 # salvando os resultados em um arquivo de texto
-sink(file = '_out/output/PCA_SEGREGATION.txt')
+sink(file = '_out/output/7_PCA_SEGREGATION.txt')
 print(summary(PCA))
 cat('\n')
 print(PCA$loadings[])
@@ -1051,7 +1051,7 @@ abline(h = 1, lty = 2, col="red")
 abline(v = k, lty = 2, col="red")
 
 # salvando em .png
-dev.print(file = '_out/figures/figScreePlot_SEGREGATION.png',
+dev.print(file = '_out/figures/7_figScreePlot_SEGREGATION.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 # --
@@ -1095,6 +1095,6 @@ p = ggplot(data = sf.obj) +
 print(p)
 
 # salvando em .png
-dev.print(file = '_out/figures/figMap_PCA_SEGREGATION.png',
+dev.print(file = '_out/figures/7_figMap_PCA_SEGREGATION.png',
           device = png, width = 1024, height = 768, res = 2*72)
 

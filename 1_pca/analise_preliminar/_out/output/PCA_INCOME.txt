@@ -1,8 +1,0 @@
-Importance of components:
-                          Comp.1
-Standard deviation     0.9925093
-Proportion of Variance 1.0000000
-Cumulative Proportion  1.0000000
-
-     Comp.1
-[1,]      1
