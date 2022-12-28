@@ -1,0 +1,6 @@
+
+	Bartlett's test of sphericity
+
+data:  X
+X-squared = 1150.3, df = 45, p-value < 2.2e-16
+

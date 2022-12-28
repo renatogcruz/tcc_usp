@@ -1,7 +1,29 @@
+
+# =============================================
+# ESTUDO DE COMPOSIÇÃO - Belo Horizonte
+# 
+# criação: 2022/12/28
+# Versão: 2022/12/28     
+# =============================================
+
+# --
+## limpando o workspace
+rm(list = ls())
+
+# --
 # Instalando e carregando pacotes -----------------------------------------
 
-pacotes <- c("plotly","tidyverse","knitr","kableExtra","PerformanceAnalytics",
-             "factoextra","reshape2","psych","ggrepel")
+pacotes <- c("corrplot",   # matrizes de correlação
+             "ggplot2",    # gráficos diversos
+             "ggspatial",  # mapas e shapefiles
+             "ggsn",       # mapas e shapefiles
+             "raster",     # mapas e shapefiles
+             "rgdal",      # mapas e shapefiles
+             "sf",         # mapas e shapefiles
+             "sp",         # mapas e shapefiles
+             "tidyverse",  # manipulação de bases de dados
+             "kableExtra")  
+
 
 if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
   instalador <- pacotes[!pacotes %in% installed.packages()]
@@ -13,58 +35,289 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
   sapply(pacotes, require, character = T) 
 }
 
+
+
+# --
 # Aplicação do algoritmo --------------------------------------------------
 
-# Continuaremos a utilizar o primeiro exemplo, com dados da base notas fatorial
-
+# --
 # Carregando a base de dados
-#--
+
 ## diretório de trabalho
-setwd("C:/Users/Renato/OneDrive/github/especializacao_estatistica_aplicada/open_applied_stat/5_estatistica_multivarida_aplicada/tp_code")
+setwd("C:/Users/Renato/OneDrive/github/_tcc/1_pca/estudo_composicoes")
 
 #--
 ## carregando funções auxiliares
 source("_src/src.R")
 
+#--
 ## carregando dados: GeoSES Belo Horizonte (intra-municipal)
-## - indicadores do censo por *áreas de ponderação*
+## - indicadores do censo por ÁREA DE PONDERAÇÃO
 ## - os dados são carregados no objeto "dta"
-nf = read.csv("_dta/GeoSES BH_IM.csv")
+dta = read.csv("_dta/geoSES_BH_IM.csv")
 
-## visualizando os dados
-# gerando IDs
-# - os IDs são os 2 últimos dígitos das APs
-nf$ID = nf$enumeration_area %% 100
-nf$ID
-
-# rearranjando colunas
-nf = nf %>% relocate(ID, .before = UF)
-
-lab = c('P_SEM_INST', 'P_FUND', 'P_ENSMED', 
-        'P_ENSSUP', 'P_ATE5', 'P_MAISDE2', 
-        'M_DENSMORA','P_POBREZA', 'M_RENDDOM',
-        'P_IDOSO10SM','P_REDE_AGUA','P_REDE_ESG')
-
-banco_original1 = nf[,lab]
 
 # --
-## labels
-# lab = c('P_GRAD', 'P_MEST', 'P_DOUTOR', 
-#         'P_SEM_INST', 'P_FUND', 'P_ENSMED', 
-#        'P_ENSSUP')
+## visualizando os dados
+dta %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped",
+                full_width = F,
+                font_size = 12)
 
+
+# --
+# gerando IDs
+# - os IDs são os 2 últimos dígitos das APs
+dta$ID = dta$enumeration_area %% 100
+dta$ID
+
+
+# rearranjando colunas
+dta = dta %>% relocate(ID, .before = UF)
+
+
+## visualizando os dados com IDs
+dta %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped",
+                full_width = F,
+                font_size = 12)
+
+
+# --
+## carregando shapefile de BH 
+# - necessário para produzir os mapas
+merge.shp = raster::shapefile(
+  x = paste0('_out/shapefiles/belo_horizonte_AP.shp'))
+
+# convertendo para sf
+sf.obj = st_as_sf(merge.shp)
+
+
+
+# ######################################## #
+#  Estudo de composição de banco de dados  #
+# ######################################## #
+
+# REGRA: manter apenas 10 variáveis
+
+# sem variavel de 'segregation'
+
+lab = c('P_SEM_INST',  # Education 
+        'P_ENSSUP',    # Education
+        'P_ATE5',      # Mobility
+        'P_MAISDE2',   # Mobility
+        'M_DENSMORA',  # Poverty
+        'P_POBREZA',   # Poverty
+        'M_RENDDOM',   # Income
+        'P_IDOSO10SM', # Wealth
+        'P_ALVSREV',   # Material deprivation
+        'P_TUDOADEQ')  # Material deprivation
+
+
+# -------------------------------------------
+# Médias, correlações e covariâncias
+# -------------------------------------------
+
+
+# --
+# vetor de médias
+# Nota: invocar apenas 'mu' printa o vetor como data frame
+# - as.matrix(mu) printa o vetor como um vetor coluna
+mu = colMeans(dta[, lab])
+mu
+as.matrix(mu)
+
+# --
+# matriz de covariâncias
+cov = cov(dta[, lab])
+cov
+
+# --
+# matriz de correlações
+corr = cor(dta[, lab])
+corr
+
+# --
+# corrplot
+corrplot(corr,
+         # customizando cores
+         # - ver função 'mat.colors' em "_src"
+         method = 'color', col = mat.colors(200),
+         # lower
+         type = 'lower',
+         # texto nos coeficientes
+         addCoef.col = 'black',
+         # cor do texto
+         tl.col = 'black',
+         # rotação do texto
+         tl.srt = 90, 
+         # cor legenda
+         cl.pos = 'b',
+         # correlações diagonais
+         diag = T,
+         # número de dígitos
+         number.digits = 2
+)
+
+
+# salvando em .png
+dev.print(file = '_out/figures/1_figCorrPlot.png',
+          device = png, width = 1024, height = 768, res = 1.2*72)
+
+
+
+# -------------------------------------------
+# PCA 
+# -------------------------------------------
+
+# --
+## matriz de observações
+X = dta[, lab]
+
+# --
+# matriz de observações padronizadas
+Z = scale(X)
+
+# --
+## PCA
+PCA = princomp(Z)
+summary(PCA)
+
+# --
+# matriz de pesos
+PCA$loadings[]
+
+# --
+# salvando os resultados em um arquivo de texto
+sink(file = '_out/output/1_PCA.txt')
+print(summary(PCA))
+cat('\n')
+print(PCA$loadings[])
+sink()
+
+# --
+## scree plot
+screeplot(PCA, main = 'Scree Plot (dashed line = Kaiser rule)', type = 'l')
+# regra de Kaiser
+k <- sum((PCA$sdev ^ 2) > 1)
+abline(h = 1, lty = 2, col="red")
+abline(v = k, lty = 2, col="red")
+
+# salvando em .png
+dev.print(file = '_out/figures/1_figScreePlot.png',
+          device = png, width = 1024, height = 768, res = 2*72)
+
+# --
+# mapa: scores da PCA
+# visualizando os 6 primeiros scores de cada componente
+head(PCA$scores)
+
+# salvando os scores da 1ª componente principal no objeto sf
+sf.obj$`Comp. 1` = - PCA$scores[, 1]   # invertendo o sinal
+
+# classificando em quintis
+sf.obj$`Comp. 1_cat` = quant.class(sf.obj$`Comp. 1`, c = 5)
+
+# invocando ggplot
+p = ggplot(data = sf.obj) + 
+  # raster geom
+  geom_sf(aes(fill = `Comp. 1_cat`)) +
+  # tema
+  theme(
+    # legenda
+    legend.title = element_text(face = 'bold'),
+    legend.key = element_blank(),
+    legend.background = element_rect(colour = 'black'),
+    # painéis
+    panel.background = element_blank(),
+    panel.border = element_rect(colour = 'black', fill = NA),
+    # título
+    plot.title = element_text(hjust = 0.5, face = 'bold')
+  ) +
+  # título
+  ggtitle(paste('Scores da 1ª Componente da PCA')) +
+  # legenda
+  guides(fill = guide_legend('Comp. 1')) +
+  # paleta de cores
+  scale_fill_brewer(palette = 'RdYlBu') +
+  # barra de escala (ggspatial)
+  ggspatial::annotation_scale() +
+  # rosa dos ventos (ggsn)
+  ggsn::north(sf.obj)
+
+print(p)
+
+
+# salvando em .png
+dev.print(file = '_out/figures/1_figMap_PCA.png',
+          device = png, width = 1024, height = 768, res = 2*72)
+
+
+
+# Teste de Bartlett de Esfericidade
+Bartlett.sphericity.test <- function(x)
+{
+  method <- "Bartlett's test of sphericity"
+  data.name <- deparse(substitute(x))
+  x <- subset(x, complete.cases(x)) # Omit missing values
+  n <- nrow(x)
+  p <- ncol(x)
+  chisq <- (1-n+(2*p+5)/6)*log(det(cor(x)))
+  df <- p*(p-1)/2
+  p.value <- pchisq(chisq, df, lower.tail=FALSE)
+  names(chisq) <- "X-squared"
+  names(df) <- "df"
+  return(structure(list(statistic=chisq, parameter=df, p.value=p.value,
+                        method=method, data.name=data.name), class="htest"))
+}
+
+# Resultado do Teste de Esfericidade:
+Bartlett.sphericity.test(X)
+
+# --
+# salvando os resultados em um arquivo de texto
+sink(file = '_out/output/Bartletts_test.txt')
+print(Bartlett.sphericity.test(X))
+sink()
+
+
+
+
+
+
+
+
+
+
+
+# -------------------------------------------
+# PCA 2.0
+# -------------------------------------------
+
+
+# --
+# rearranjando colunas
+dta = dta %>% relocate(ID, .before = UF)
+banco_original1 = dta[,lab]
+
+# --
 # O algoritmo prcomp(), do pacote psych, EXIGE que a a matriz de dados fornecida
-# a ele j? esteja padronizada pelo procedimento zscores:
+# a ele já esteja padronizada pelo procedimento zscores:
 nf_std <- nf[, lab] %>% 
-  scale() %>%                         # faz a padroniza??o
+  scale() %>%                         # faz a padronização
   data.frame()                        # converte o banco em um dataframe novamente
 
 
 
+# --
 # Rodando a PCA:
-afpc <- prcomp(nf_std) # aula te?rica se resume nesta ?nica linha
-summary(afpc)                     # similar ao .describe() do Pandas
+afpc <- prcomp(nf_std)        # aula teórica se resume nesta única linha
+summary(afpc)                 # similar ao .describe() do Pandas
 
+
+# --
 # O objeto afpc possui os seguintes componentes:
 afpc$sdev
 afpc$rotation
@@ -80,6 +333,7 @@ afpc$center
 
 # scale: desvios-padrão de cada variável utilizadas para a padronização.
 
+# --
 # Visualizando os pesos que cada variável tem em cada componente principal 
 # obtido pela PCA
 data.frame(afpc$rotation) %>%
