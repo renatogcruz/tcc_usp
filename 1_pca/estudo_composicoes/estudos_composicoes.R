@@ -22,7 +22,8 @@ pacotes <- c("corrplot",   # matrizes de correlação
              "sf",         # mapas e shapefiles
              "sp",         # mapas e shapefiles
              "tidyverse",  # manipulação de bases de dados
-             "kableExtra")  
+             "kableExtra",
+             "RcmdrMisc")  # Teste KMO
 
 
 if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
@@ -114,6 +115,26 @@ lab = c('P_SEM_INST',  # Education
         'P_IDOSO10SM', # Wealth
         'P_ALVSREV',   # Material deprivation
         'P_TUDOADEQ')  # Material deprivation
+
+
+# -------------------------------------------
+# Tabela com Análise Descritiva: Média, 
+# Variância, DP e CV
+# -------------------------------------------
+
+Media     <- round(apply(dta[, lab],2,mean),4) # Média
+Variance <- round(apply(dta[, lab],2,var),4)   # Variancia
+SD        <- sqrt(Variance)                    # Desvio-padrão
+CV.perc   <- 100*((sqrt(Variance))/Media)      # Coeficiente de Variação
+
+# Tabela
+descriptive_table <- data.frame(Media,Variance,SD,CV.perc)
+descriptive_table
+# --
+# salvando os resultados em um arquivo de texto
+sink(file = '_out/output/descriptive_table.txt')
+print(descriptive_table)
+sink()
 
 
 # -------------------------------------------
@@ -255,8 +276,21 @@ dev.print(file = '_out/figures/1_figMap_PCA.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 
-
+# --
 # Teste de Bartlett de Esfericidade
+# O teste de esfericidade de Bartlett testa se a matriz de correlação é uma 
+# matriz identidade, o que indicaria que não há correlação entre os dados. Dessa 
+# forma, procura-se para um nível de significância assumido em 5% rejeitar a 
+# hipótese nula(H0) de matriz de correlação identidade.
+
+
+
+# Teste de Hipótese: 
+# H0: A matriz de correlação é uma matriz identidade 
+# H1: A matriz de correlação NÃO é uma matriz identidade
+
+# Regra de Decisão: Se pvalor(p-value) < 0.05, então, REJEITA-SE H0!
+
 Bartlett.sphericity.test <- function(x)
 {
   method <- "Bartlett's test of sphericity"
@@ -273,6 +307,8 @@ Bartlett.sphericity.test <- function(x)
                         method=method, data.name=data.name), class="htest"))
 }
 
+
+
 # Resultado do Teste de Esfericidade:
 Bartlett.sphericity.test(X)
 
@@ -282,8 +318,50 @@ sink(file = '_out/output/Bartletts_test.txt')
 print(Bartlett.sphericity.test(X))
 sink()
 
+# --
+# Teste KMO (Kaiser-Meyer-Olkin)
+
+# O teste Kaiser-Meyer-Olkin (KMO) é uma estatística que indica a proporção da 
+# variância dos dados que pode ser considerada comum a todas as variáveis, 
+# ou seja, que pode ser atribuída a um fator comum. Então: quanto mais próximo 
+# de 1, melhor o resultado, ou seja, mais adequada é a amostra à aplicação da ACP
+
+# Friel (2009) sugere a seguinte escala para interpretar o valor da 
+# estatística KMO
+# Maior que(>) 0,9 — Excelente
+# (0,8; 0,9] — Meritória (ou bom)
+# (0,7; 0,8] — Intermediária (ou mediano)
+# (0,6; 0,7] — Medíocre
+# (0,5; 0,6] — Mísera
+# menor que(<) 0,5 — Inaceitável
 
 
+# Outros autores sugerem:
+# Pallant (2007) sugere 0,60 como um limite razoável;
+# Hair et al. (2006) sugerem 0,50 como patamar aceitável
+
+matcor <- cor(X)
+matcorp <- partial.cor(X)
+p <- ncol(X)
+
+idiag <- seq(1, by = p + 1, length = p)
+somar2 <- sum((as.numeric(matcor)[-idiag])^2)
+
+# Resultado do KMO:
+cat("\n KMO = ",somar2/(somar2 + sum((as.numeric(matcorp$R)[-idiag])^2)))
+
+# aplicando direto a função
+KMO(matcor)
+
+# --
+# salvando os resultados em um arquivo de texto
+sink(file = '_out/output/Kaiser-Meyer-Olkin_test.txt')
+print(KMO(matcor))
+sink()
+
+
+
+# ref.: https://rpubs.com/juacivm/banco_CANA_0_40
 
 
 

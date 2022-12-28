@@ -1,0 +1,8 @@
+Kaiser-Meyer-Olkin factor adequacy
+Call: KMO(r = matcor)
+Overall MSA =  0.86
+MSA for each item = 
+ P_SEM_INST    P_ENSSUP      P_ATE5   P_MAISDE2  M_DENSMORA   P_POBREZA   M_RENDDOM P_IDOSO10SM 
+       0.90        0.85        0.78        0.85        0.88        0.90        0.87        0.89 
+  P_ALVSREV  P_TUDOADEQ 
+       0.82        0.82 
