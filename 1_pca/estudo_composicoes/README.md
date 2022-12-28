@@ -1,6 +1,6 @@
 <span align="center">
 
-##  CC | USP 👋 
+##  TCC | USP 👋 
 
 </span>
 
@@ -15,27 +15,45 @@
 </p>
 
 
+<h2>Descriptive Table</h2>
+<pre><code>
+                Media     Variance           SD   CV.perc
+P_SEM_INST    42.1950 2.029168e+02   14.2448868  33.75966
+P_ENSSUP      16.5126 2.441122e+02   15.6240904  94.61920
+P_ATE5         6.3162 4.175200e+00    2.0433306  32.35063
+P_MAISDE2      1.1942 1.248500e+00    1.1173630  93.56582
+M_DENSMORA     0.5237 1.350000e-02    0.1161895  22.18627
+P_POBREZA     15.6235 7.165590e+01    8.4649808  54.18108
+M_RENDDOM   4991.8011 1.471408e+07 3835.8939958  76.84389
+P_IDOSO10SM    1.0431 2.530200e+00    1.5906602 152.49355
+P_ALVSREV      9.5693 4.207610e+01    6.4866093  67.78562
+P_TUDOADEQ    86.0409 8.537370e+01    9.2397890  10.73883
+</code></pre>
 
-<h2>PCA Model Final</h2>
+<h1>PCA Model Final</h1>
 <p>  
 <div align="left">
 <img src="https://user-images.githubusercontent.com/32683908/209817218-d559e10a-b541-490e-bd3b-41514bcb1d8c.png"/>
 </div>
 </p>
-<p>Plot</p>
+<h2>Plot</h2>
 <p>  
 <div align="left">
 <img src="https://user-images.githubusercontent.com/32683908/209817223-2455549f-62b3-486b-b717-4021c12f6fb5.png"/>
 </div>
 </p>
-<p>PCA</p>
+
+
+<h2>PCA</h2>
 <p>  
 <div align="left">
 <img src="https://user-images.githubusercontent.com/32683908/209817220-26f50d33-386b-4d7b-bf62-dd3cd09947c6.png"/>
 </div>
 </p>
 </p>
-<p>PCA loadings</p>
+
+
+<h2>PCA loadings</h2>
 <pre><code>
 Importance of components:
                           Comp.1    Comp.2     Comp.3     Comp.4     Comp.5      Comp.6      Comp.7
@@ -71,7 +89,17 @@ P_ALVSREV    0.60401686 -0.137671887 -0.103281253
 P_TUDOADEQ   0.40938776 -0.064908037 -0.132136793
 </code></pre>
 
-<p>Bartlett's test of sphericity</p>
+<h2>Bartlett's test of sphericity</h2>
+
+<p align="left">
+<br>O teste de esfericidade de Bartlett testa se a matriz de correlação é uma matriz identidade, o que indicaria que não há correlação entre os dados. <br>Dessa forma, procura-se para um nível de significância assumido em 5% rejeitar a hipótese nula(H0) de matriz de correlação identidade.
+
+<br>Teste de Hipótese: <br>H0: A matriz de correlação é uma matriz identidade <br>H1: A matriz de correlação NÃO é uma matriz identidade
+
+<br>Regra de Decisão: Se pvalor(p-value) < 0.05, então, REJEITA-SE H0!!!
+<\p>
+	
+
 <pre><code>
 	Bartlett's test of sphericity
 
@@ -80,22 +108,26 @@ X-squared = 1150.3, df = 45, p-value < 2.2e-16
 </code></pre>
 
 
-<p>Descriptive Table</p>
-<pre><code>
-                Media     Variance           SD   CV.perc
-P_SEM_INST    42.1950 2.029168e+02   14.2448868  33.75966
-P_ENSSUP      16.5126 2.441122e+02   15.6240904  94.61920
-P_ATE5         6.3162 4.175200e+00    2.0433306  32.35063
-P_MAISDE2      1.1942 1.248500e+00    1.1173630  93.56582
-M_DENSMORA     0.5237 1.350000e-02    0.1161895  22.18627
-P_POBREZA     15.6235 7.165590e+01    8.4649808  54.18108
-M_RENDDOM   4991.8011 1.471408e+07 3835.8939958  76.84389
-P_IDOSO10SM    1.0431 2.530200e+00    1.5906602 152.49355
-P_ALVSREV      9.5693 4.207610e+01    6.4866093  67.78562
-P_TUDOADEQ    86.0409 8.537370e+01    9.2397890  10.73883
-</code></pre>
 
-<p>Kaiser-Meyer-Olkin test</p>
+<h2>Kaiser-Meyer-Olkin test</h2>
+
+<p align="left">
+<br>O teste Kaiser-Meyer-Olkin (KMO) é uma estatística que indica a proporção da variância dos dados que pode ser considerada comum a todas as variáveis, <br>ou seja, que pode ser atribuída a um fator comum. Então: quanto mais próximo de 1, melhor o resultado, ou seja, mais adequada é a amostra à aplicação <br>da ACP
+
+<br>Friel (2009) sugere a seguinte escala para interpretar o valor da estatística KMO
+<br>Maior que(>) 0,9 — Excelente
+<br>(0,8; 0,9] — Meritória (ou bom)
+<br>(0,7; 0,8] — Intermediária (ou mediano)
+<br>(0,6; 0,7] — Medíocre
+<br>(0,5; 0,6] — Mísera
+<br>menor que(<) 0,5 — Inaceitável
+
+<br>Outros autores sugerem:
+<br>Pallant (2007) sugere 0,60 como um limite razoável;
+<br>Hair et al. (2006) sugerem 0,50 como patamar aceitável
+<\p>
+
+
 <pre><code>
 Kaiser-Meyer-Olkin factor adequacy
 Call: KMO(r = matcor)
