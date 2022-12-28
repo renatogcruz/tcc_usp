@@ -37,7 +37,6 @@
 </p>
 <p>PCA loadings</p>
 <pre><code>
-
 Importance of components:
                           Comp.1    Comp.2     Comp.3     Comp.4     Comp.5      Comp.6      Comp.7
 Standard deviation     2.6205237 1.0203067 0.95737246 0.83864042 0.40574982 0.231134011 0.212770681
@@ -70,16 +69,40 @@ M_RENDDOM    0.32922241 -0.283689980  0.105803120
 P_IDOSO10SM  0.08902919  0.066431004 -0.040671914
 P_ALVSREV    0.60401686 -0.137671887 -0.103281253
 P_TUDOADEQ   0.40938776 -0.064908037 -0.132136793
-
 </code></pre>
 
 <p>Bartlett's test of sphericity</p>
 <pre><code>
-
 	Bartlett's test of sphericity
 
 data:  X
 X-squared = 1150.3, df = 45, p-value < 2.2e-16
+</code></pre>
 
 
+<p>Descriptive Table</p>
+<pre><code>
+                Media     Variance           SD   CV.perc
+P_SEM_INST    42.1950 2.029168e+02   14.2448868  33.75966
+P_ENSSUP      16.5126 2.441122e+02   15.6240904  94.61920
+P_ATE5         6.3162 4.175200e+00    2.0433306  32.35063
+P_MAISDE2      1.1942 1.248500e+00    1.1173630  93.56582
+M_DENSMORA     0.5237 1.350000e-02    0.1161895  22.18627
+P_POBREZA     15.6235 7.165590e+01    8.4649808  54.18108
+M_RENDDOM   4991.8011 1.471408e+07 3835.8939958  76.84389
+P_IDOSO10SM    1.0431 2.530200e+00    1.5906602 152.49355
+P_ALVSREV      9.5693 4.207610e+01    6.4866093  67.78562
+P_TUDOADEQ    86.0409 8.537370e+01    9.2397890  10.73883
+</code></pre>
+
+<p>Kaiser-Meyer-Olkin test</p>
+<pre><code>
+Kaiser-Meyer-Olkin factor adequacy
+Call: KMO(r = matcor)
+Overall MSA =  0.86
+MSA for each item = 
+ P_SEM_INST    P_ENSSUP      P_ATE5   P_MAISDE2  M_DENSMORA   P_POBREZA   M_RENDDOM P_IDOSO10SM 
+       0.90        0.85        0.78        0.85        0.88        0.90        0.87        0.89 
+  P_ALVSREV  P_TUDOADEQ 
+       0.82        0.82 
 </code></pre>
