@@ -1,8 +1,8 @@
 
 # =============================================
-# ESTUDO DE COMPOSIÇÃO - Belo Horizonte
+# Modelo Final - PCA 
 # 
-# criação: 2022/12/28
+# criação: 2022/12/29
 # Versão: 2022/12/29     
 # =============================================
 
@@ -23,7 +23,9 @@ pacotes <- c("corrplot",   # matrizes de correlação
              "sp",         # mapas e shapefiles
              "tidyverse",  # manipulação de bases de dados
              "kableExtra",
-             "RcmdrMisc")  # Teste KMO
+             "RcmdrMisc",  # Teste KMO
+             "dplyr",
+             "writexl")    # salvar em excel 
 
 
 if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
@@ -36,10 +38,6 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
   sapply(pacotes, require, character = T) 
 }
 
-
-
-# --
-# Aplicação do algoritmo --------------------------------------------------
 
 # --
 # Carregando a base de dados
@@ -59,15 +57,6 @@ dta = read.csv("_dta/geoSES_BH_IM.csv")
 
 
 # --
-## visualizando os dados
-dta %>%
-  kable() %>%
-  kable_styling(bootstrap_options = "striped",
-                full_width = F,
-                font_size = 12)
-
-
-# --
 # gerando IDs
 # - os IDs são os 2 últimos dígitos das APs
 dta$ID = dta$enumeration_area %% 100
@@ -76,14 +65,6 @@ dta$ID
 
 # rearranjando colunas
 dta = dta %>% relocate(ID, .before = UF)
-
-
-## visualizando os dados com IDs
-dta %>%
-  kable() %>%
-  kable_styling(bootstrap_options = "striped",
-                full_width = F,
-                font_size = 12)
 
 
 # --
@@ -96,15 +77,8 @@ merge.shp = raster::shapefile(
 sf.obj = st_as_sf(merge.shp)
 
 
-
-# ######################################## #
-#  Estudo de composição de banco de dados  #
-# ######################################## #
-
-# REGRA: manter apenas 10 variáveis
-
-# sem variavel de 'segregation'
-
+#  -- 
+# variáveis finais 
 lab = c('P_SEM_INST',  # Education 
         'P_ENSSUP',    # Education
         'P_ATE5',      # Mobility
@@ -115,77 +89,6 @@ lab = c('P_SEM_INST',  # Education
         'P_IDOSO10SM', # Wealth
         'P_ALVSREV',   # Material deprivation
         'P_TUDOADEQ')  # Material deprivation
-
-
-# -------------------------------------------
-# Tabela com Análise Descritiva: Média, 
-# Variância, DP e CV
-# -------------------------------------------
-
-Media     <- round(apply(dta[, lab],2,mean),4) # Média
-Variance <- round(apply(dta[, lab],2,var),4)   # Variancia
-SD        <- sqrt(Variance)                    # Desvio-padrão
-CV.perc   <- 100*((sqrt(Variance))/Media)      # Coeficiente de Variação
-
-# Tabela
-descriptive_table <- data.frame(Media,Variance,SD,CV.perc)
-descriptive_table
-# --
-# salvando os resultados em um arquivo de texto
-sink(file = '_out/output/descriptive_table.txt')
-print(descriptive_table)
-sink()
-
-
-# -------------------------------------------
-# Médias, correlações e covariâncias
-# -------------------------------------------
-
-
-# --
-# vetor de médias
-# Nota: invocar apenas 'mu' printa o vetor como data frame
-# - as.matrix(mu) printa o vetor como um vetor coluna
-mu = colMeans(dta[, lab])
-mu
-as.matrix(mu)
-
-# --
-# matriz de covariâncias
-cov = cov(dta[, lab])
-cov
-
-# --
-# matriz de correlações
-corr = cor(dta[, lab])
-corr
-
-# --
-# corrplot
-corrplot(corr,
-         # customizando cores
-         # - ver função 'mat.colors' em "_src"
-         method = 'color', col = mat.colors(200),
-         # lower
-         type = 'lower',
-         # texto nos coeficientes
-         addCoef.col = 'black',
-         # cor do texto
-         tl.col = 'black',
-         # rotação do texto
-         tl.srt = 90, 
-         # cor legenda
-         cl.pos = 'b',
-         # correlações diagonais
-         diag = T,
-         # número de dígitos
-         number.digits = 2
-)
-
-
-# salvando em .png
-dev.print(file = '_out/figures/1_figCorrPlot.png',
-          device = png, width = 1024, height = 768, res = 1.2*72)
 
 
 
@@ -203,197 +106,22 @@ Z = scale(X)
 
 # --
 ## PCA
-PCA = princomp(Z)
-summary(PCA)
+afpc = prcomp(Z) 
+summary(afpc)
+
+# --
+# salvando os resultados em um arquivo de texto
+sink(file = '_out/output/pca_final.txt')
+print(summary(afpc))
+sink()
 
 # --
 # matriz de pesos
-PCA$loadings[]
+afpc$loadings[]
 
-# --
-# salvando os resultados em um arquivo de texto
-sink(file = '_out/output/1_PCA.txt')
-print(summary(PCA))
-cat('\n')
-print(PCA$loadings[])
+sink(file = '_out/output/rotation_final.txt')
+print(afpc$rotation)
 sink()
-
-# --
-## scree plot
-screeplot(PCA, main = 'Scree Plot (dashed line = Kaiser rule)', type = 'l')
-# regra de Kaiser
-k <- sum((PCA$sdev ^ 2) > 1)
-abline(h = 1, lty = 2, col="red")
-abline(v = k, lty = 2, col="red")
-
-# salvando em .png
-dev.print(file = '_out/figures/1_figScreePlot.png',
-          device = png, width = 1024, height = 768, res = 2*72)
-
-# --
-# mapa: scores da PCA
-# visualizando os 6 primeiros scores de cada componente
-head(PCA$scores)
-
-# salvando os scores da 1ª componente principal no objeto sf
-sf.obj$`Comp. 1` = - PCA$scores[, 1]   # invertendo o sinal
-
-# classificando em quintis
-sf.obj$`Comp. 1_cat` = quant.class(sf.obj$`Comp. 1`, c = 5)
-
-# invocando ggplot
-p = ggplot(data = sf.obj) + 
-  # raster geom
-  geom_sf(aes(fill = `Comp. 1_cat`)) +
-  # tema
-  theme(
-    # legenda
-    legend.title = element_text(face = 'bold'),
-    legend.key = element_blank(),
-    legend.background = element_rect(colour = 'black'),
-    # painéis
-    panel.background = element_blank(),
-    panel.border = element_rect(colour = 'black', fill = NA),
-    # título
-    plot.title = element_text(hjust = 0.5, face = 'bold')
-  ) +
-  # título
-  ggtitle(paste('Scores da 1ª Componente da PCA')) +
-  # legenda
-  guides(fill = guide_legend('Comp. 1')) +
-  # paleta de cores
-  scale_fill_brewer(palette = 'RdYlBu') +
-  # barra de escala (ggspatial)
-  ggspatial::annotation_scale() +
-  # rosa dos ventos (ggsn)
-  ggsn::north(sf.obj)
-
-print(p)
-
-
-# salvando em .png
-dev.print(file = '_out/figures/1_figMap_PCA.png',
-          device = png, width = 1024, height = 768, res = 2*72)
-
-
-# --
-# Teste de Bartlett de Esfericidade
-# O teste de esfericidade de Bartlett testa se a matriz de correlação é uma 
-# matriz identidade, o que indicaria que não há correlação entre os dados. Dessa 
-# forma, procura-se para um nível de significância assumido em 5% rejeitar a 
-# hipótese nula(H0) de matriz de correlação identidade.
-
-
-
-# Teste de Hipótese: 
-# H0: A matriz de correlação é uma matriz identidade 
-# H1: A matriz de correlação NÃO é uma matriz identidade
-
-# Regra de Decisão: Se pvalor(p-value) < 0.05, então, REJEITA-SE H0!
-
-Bartlett.sphericity.test <- function(x)
-{
-  method <- "Bartlett's test of sphericity"
-  data.name <- deparse(substitute(x))
-  x <- subset(x, complete.cases(x)) # Omit missing values
-  n <- nrow(x)
-  p <- ncol(x)
-  chisq <- (1-n+(2*p+5)/6)*log(det(cor(x)))
-  df <- p*(p-1)/2
-  p.value <- pchisq(chisq, df, lower.tail=FALSE)
-  names(chisq) <- "X-squared"
-  names(df) <- "df"
-  return(structure(list(statistic=chisq, parameter=df, p.value=p.value,
-                        method=method, data.name=data.name), class="htest"))
-}
-
-
-
-# Resultado do Teste de Esfericidade:
-Bartlett.sphericity.test(X)
-
-# --
-# salvando os resultados em um arquivo de texto
-sink(file = '_out/output/Bartletts_test.txt')
-print(Bartlett.sphericity.test(X))
-sink()
-
-# --
-# Teste KMO (Kaiser-Meyer-Olkin)
-
-# O teste Kaiser-Meyer-Olkin (KMO) é uma estatística que indica a proporção da 
-# variância dos dados que pode ser considerada comum a todas as variáveis, 
-# ou seja, que pode ser atribuída a um fator comum. Então: quanto mais próximo 
-# de 1, melhor o resultado, ou seja, mais adequada é a amostra à aplicação da ACP
-
-# Friel (2009) sugere a seguinte escala para interpretar o valor da 
-# estatística KMO
-# Maior que(>) 0,9 — Excelente
-# (0,8; 0,9] — Meritória (ou bom)
-# (0,7; 0,8] — Intermediária (ou mediano)
-# (0,6; 0,7] — Medíocre
-# (0,5; 0,6] — Mísera
-# menor que(<) 0,5 — Inaceitável
-
-
-# Outros autores sugerem:
-# Pallant (2007) sugere 0,60 como um limite razoável;
-# Hair et al. (2006) sugerem 0,50 como patamar aceitável
-
-matcor <- cor(X)
-matcorp <- partial.cor(X)
-p <- ncol(X)
-
-idiag <- seq(1, by = p + 1, length = p)
-somar2 <- sum((as.numeric(matcor)[-idiag])^2)
-
-# Resultado do KMO:
-cat("\n KMO = ",somar2/(somar2 + sum((as.numeric(matcorp$R)[-idiag])^2)))
-
-# aplicando direto a função
-KMO(matcor)
-
-# --
-# salvando os resultados em um arquivo de texto
-sink(file = '_out/output/Kaiser-Meyer-Olkin_test.txt')
-print(KMO(matcor))
-sink()
-
-
-
-# ref.: https://rpubs.com/juacivm/banco_CANA_0_40
-
-
-
-
-
-
-
-
-# -------------------------------------------
-# PCA 2.0
-# -------------------------------------------
-
-
-# --
-# rearranjando colunas
-dta = dta %>% relocate(ID, .before = UF)
-banco_original1 = dta[,lab]
-
-# --
-# O algoritmo prcomp(), do pacote psych, EXIGE que a a matriz de dados fornecida
-# a ele já esteja padronizada pelo procedimento zscores:
-nf_std <- dta[, lab] %>% 
-  scale() %>%                         # faz a padronização
-  data.frame()                        # converte o banco em um dataframe novamente
-
-
-
-# --
-# Rodando a PCA:
-afpc <- prcomp(nf_std) 
-summary(afpc)                 
-
 
 # --
 # O objeto afpc possui os seguintes componentes:
@@ -416,7 +144,7 @@ afpc$center
 # obtido pela PCA
 data.frame(afpc$rotation) %>%
   mutate(var = names(nf[, lab])) %>% 
-  melt(id.vars = "var") %>%
+  melt(id.vars = "var") %>%           # NÃO FUNCIONA????????????
   mutate(var = factor(var)) %>%
   ggplot(aes(x = var, y = value, fill = var)) +
   geom_bar(stat = "identity", color = "black") +
@@ -452,8 +180,8 @@ data.frame(cargas_fatoriais) %>%
   kable_styling(bootstrap_options = "striped", 
                 full_width = T, 
                 font_size = 10)
-#--
 
+#--
 # Visualizando as Comunalidades
 data.frame(rowSums(cargas_fatoriais ^ 2)) %>%
   rename(comunalidades = 1) %>%
@@ -462,10 +190,8 @@ data.frame(rowSums(cargas_fatoriais ^ 2)) %>%
                 full_width = T, 
                 font_size = 10)
 
-
+# --
 # Relatório das cargas fatoriais e das comunalidades
-
-
 data.frame(cargas_fatoriais) %>%
   rename(F1 = X1,
          F2 = X2) %>%
@@ -475,6 +201,12 @@ data.frame(cargas_fatoriais) %>%
                 full_width = T, 
                 font_size = 10)
 
+
+# --
+# gravando cargas fatoriais e comunalidades num dataframe
+df <- data.frame(cargas_fatoriais)
+df['Comunalidade'] = rowSums(cargas_fatoriais ^ 2)
+write_xlsx(df,"_out/output/cargas_fatoriais_comunalidades.xlsx")
 
 
 
@@ -498,9 +230,14 @@ data.frame(cargas_fatoriais) %>%
 
 # Scores Fatoriais
 scores_fatoriais <- t(afpc$rotation)/afpc$sdev 
-colnames(scores_fatoriais) <- colnames(nf_std)
+colnames(scores_fatoriais) <- colnames(X)
 
 scores_fatoriais
+
+df  <-  data.frame(t(scores_fatoriais)[,1:k])
+write_xlsx(df,"_out/output/scores_fatoriais.xlsx")
+
+
 
 scores_fatoriais %>%
   t() %>%
@@ -527,8 +264,8 @@ score_D2
 
 
 # Estabelecendo o ranking dos indicadores assumido
-F1 <- t(apply(nf_std, 1, function(x) x * score_D1))
-F2 <- t(apply(nf_std, 1, function(x) x * score_D2))
+F1 <- t(apply(X, 1, function(x) x * score_D1))
+F2 <- t(apply(X, 1, function(x) x * score_D2))
 
 F1
 F2
@@ -555,9 +292,9 @@ F2 %>%
                 font_size = 10)
 
 # Importando as colunas de fatores F1 e F2
-nf_std["Fator1"] <- F1$fator1
-nf_std["Fator2"] <- F2$fator2
-res_ACP = nf_std[,c('Fator1', 'Fator2')]
+X["Fator1"] <- F1$fator1
+X["Fator2"] <- F2$fator2
+res_ACP = X[,c('Fator1', 'Fator2')]
 
 # Criando um ranking pela soma ponderada dos fatores por sua variância
 # compartilhada:
@@ -566,18 +303,25 @@ res_ACP = nf_std[,c('Fator1', 'Fator2')]
 var_compartilhada <- (afpc$sdev ^ 2/sum(afpc$sdev ^ 2))
 var_compartilhada
 
-nf_std %>%
+X %>%
   mutate(pontuacao = Fator1 * var_compartilhada[1] +
-           Fator2 * var_compartilhada[2]) -> nf
+           Fator2 * var_compartilhada[2]) -> X
 
 # Visualizando o ranking final
-nf_std %>%
+X %>%
   arrange(desc(pontuacao)) %>%
   kable() %>%
   kable_styling(bootstrap_options = "striped", 
                 full_width = T, 
                 font_size = 10)
 
+
+X$ID = dta$enumeration_area %% 100
+X$ID
+
+NEW = X %>% relocate(ID, .before = P_SEM_INST)
+
+write_xlsx(NEW,"_out/output/fatores_e_ranking_final.xlsx")
 
 
 # --
@@ -600,9 +344,17 @@ Bartlett.sphericity.test <- function(x)
 
 # --
 # Resultado do Teste de Esfericidade:
-Bartlett.sphericity.test(banco_original1)
+Bartlett.sphericity.test(X)
 
 # --
 # Gráfico Colorido com as Contribuições
 fviz_pca_var(res_ACP, col.var="contrib", gradient.cols = c("red","yellow","green"), repel = TRUE # Avoid text overlapping) 
 )
+
+
+
+
+
+
+
+
