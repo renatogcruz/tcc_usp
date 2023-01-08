@@ -25,7 +25,8 @@ pacotes <- c("corrplot",   # matrizes de correlação
              "kableExtra",
              "RcmdrMisc",  # Teste KMO
              "dplyr",
-             "writexl")    # salvar em excel 
+             "writexl",    # salvar em excel 
+             "reshape2")   # função melt
 
 
 if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
@@ -142,8 +143,8 @@ afpc$center
 # --
 # Visualizando os pesos que cada variável tem em cada componente principal 
 # obtido pela PCA
-data.frame(afpc$rotation) %>%
-  mutate(var = names(nf[, lab])) %>% 
+data.frame(afpc$rotation[,1:2]) %>%
+  mutate(var = names(dta[, lab])) %>% 
   melt(id.vars = "var") %>%           # NÃO FUNCIONA????????????
   mutate(var = factor(var)) %>%
   ggplot(aes(x = var, y = value, fill = var)) +
@@ -153,15 +154,10 @@ data.frame(afpc$rotation) %>%
   scale_fill_viridis_d() +
   theme_bw()
 
-# Scree Plot - apenas ignorar os warnings
-# para escolher quantos fatores serão retidos. Mas vamos utilizar critério de kaiser
-ggplotly(
-  fviz_eig(X = afpc,
-           ggtheme = theme_bw(), 
-           barcolor = "black", 
-           barfill = "dodgerblue4",
-           linecolor = "darkgoldenrod3")
-)
+# salvando em .png
+dev.print(file = '_out/figures/1_Loading.png',
+          device = png, width = 1024, height = 768, res = 2*72)
+
 
 #--
 # non-conformable arguments
