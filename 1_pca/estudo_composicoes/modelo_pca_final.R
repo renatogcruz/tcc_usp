@@ -21,6 +21,8 @@ pacotes <- c("corrplot",   # matrizes de correlação
              "rgdal",      # mapas e shapefiles
              "sf",         # mapas e shapefiles
              "sp",         # mapas e shapefiles
+             "ggrepel",    # mapas e shapefiles
+             "gggenes",    # mapas e shapefiles
              "tidyverse",  # manipulação de bases de dados
              "kableExtra",
              "RcmdrMisc",  # Teste KMO
@@ -369,6 +371,47 @@ lab = c('P_SEM_INST',  # Education
 
 
 
+# --
+# vetor de médias
+# Nota: invocar apenas 'mu' printa o vetor como data frame
+# - as.matrix(mu) printa o vetor como um vetor coluna
+mu = colMeans(dta[, lab])
+mu
+as.matrix(mu)
+
+# matriz de covariâncias
+cov = cov(dta[, lab])
+cov
+
+# matriz de correlações
+corr = cor(dta[, lab])
+corr
+
+# corrplot
+corrplot(corr,
+         # customizando cores
+         # - ver função 'mat.colors' em "_src"
+         method = 'color', col = mat.colors(200),
+         # lower
+         type = 'lower',
+         # texto nos coeficientes
+         addCoef.col = 'black',
+         # cor do texto
+         tl.col = 'black',
+         # rotação do texto
+         tl.srt = 90, 
+         # cor legenda
+         cl.pos = 'b',
+         # correlações diagonais
+         diag = T,
+         # número de dígitos
+         number.digits = 2
+)
+
+# salvando em .png
+dev.print(file = '_out/figures/1_figCorrPlot_PCA_2.png',
+          device = png, width = 1024, height = 768, res = 1.2*72)
+
 # -------------------------------------------
 # PCA 
 # -------------------------------------------
@@ -498,6 +541,10 @@ data.frame(cargas_fatoriais) %>%
                                     digits = 2),
                               "%)"))) +
   theme_bw()
+
+# salvando em .png
+dev.print(file = '_out/figures/1_Cargas_Fatoriais_2.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 
 
 # Scores Fatoriais
