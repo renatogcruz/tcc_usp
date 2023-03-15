@@ -13,7 +13,6 @@ library(gridExtra)   #para a funcao grid arrange
 library(readxl)
 
 
-
 ########################################
 #
 # https://www.r-bloggers.com/2021/04/cluster-analysis-in-r/
@@ -49,27 +48,27 @@ fatores_pad %>% ggplot() +
 
 
 # --
-### método dbscan
+### método k-means
+
+# Método de Elbow para identificação do número ótimo de clusters
+## Apresenta a variação total dentro dos clusters para várias nº de clusters
+## Em geral, quando há a dobra é um indício do número ótimo de clusters
+fviz_nbclust(fatores_pad, kmeans, method = "wss", k.max = 5)
 
 #Calcular o Cluster
-dbscan <- fpc::dbscan(fatores_pad,eps = 0.56, MinPts = 3)
+cluster.k3 <- kmeans(fatores_pad, centers = 3)
 
-fatores_fim$dbscan <- dbscan$cluster
+#criando grupos
+grupo_kmeans3 <- data.frame(cluster.k3$cluster)
+
+#juntando com a base original
+kmeans_fim <- cbind(fatores_fim, grupo_kmeans3)
 
 #visualizando em cores os clusters
-fatores_fim %>% ggplot() +
+kmeans_fim %>% ggplot() +
   geom_point(aes(x = Fator1,
                  y = Fator2,
-                 color = as.factor(dbscan)),
+                 color = as.factor(cluster.k3.cluster)),
              size = 3) + 
-  ggtitle("Método dbscan")+
+  ggtitle("Método k-means")+
   theme(plot.title = element_text(hjust = 0.5))
-
-# --
-# Análise de variância de um fator (ANOVA)
-# ANOVA da variável 'fator1'
-summary(anova_fator1 <- aov(formula = Fator1 ~ dbscan,
-                                data = fatores_fim))
-# ANOVA da variável 'fator2'
-summary(anova_fator2 <- aov(formula = Fator2 ~ dbscan,
-                            data = fatores_fim))
