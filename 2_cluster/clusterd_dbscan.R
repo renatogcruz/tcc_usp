@@ -4,20 +4,36 @@
 #
 ########################################
 
-library(tidyverse)   #pacote para manipulacao de dados
-library(cluster)     #algoritmo de cluster
-library(dendextend)  #compara dendogramas
-library(factoextra)  #algoritmo de cluster e visualizacao
-library(fpc)         #algoritmo de cluster e visualizacao
-library(gridExtra)   #para a funcao grid arrange
-library(readxl)
+# --
+# Instalando e carregando pacotes -----------------------------------------
+
+pacotes <- c("tidyverse",   # pacote para manipulacao de dados
+             "cluster",     # algoritmo de cluster
+             "dendextend",  # compara dendogramas
+             "factoextra",  # algoritmo de cluster e visualizacao
+             "fpc",         # algoritmo de cluster e visualizacao
+             "gridExtra",   # para a funcao grid arrange
+             "readxl",      # 
+             "writexl")     # salvar em excel
+
+
+if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
+  instalador <- pacotes[!pacotes %in% installed.packages()]
+  for(i in 1:length(instalador)) {
+    install.packages(instalador, dependencies = T)
+    break()}
+  sapply(pacotes, require, character = T) 
+} else {
+  sapply(pacotes, require, character = T) 
+}
 
 
 
 ########################################
 #
 # https://www.r-bloggers.com/2021/04/cluster-analysis-in-r/
-#
+# http://www.sthda.com/english/wiki/wiki.php?id_contents=7940#:~:text=dbscan()%20shows%20a%20statistic,%3D%200.15%20and%20MinPts%20%3D%205.
+# https://medium.com/towards-data-science/density-based-clustering-dbscan-vs-hdbscan-39e02af990c7
 ########################################
 
 #Carregar base de dados: 

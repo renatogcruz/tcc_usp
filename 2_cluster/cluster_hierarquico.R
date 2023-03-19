@@ -4,14 +4,6 @@
 #
 ########################################
 
-library(tidyverse)   #pacote para manipulacao de dados
-library(cluster)     #algoritmo de cluster
-library(dendextend)  #compara dendogramas
-library(factoextra)  #algoritmo de cluster e visualizacao
-library(fpc)         #algoritmo de cluster e visualizacao
-library(gridExtra)   #para a funcao grid arrange
-library(readxl)
-
 # --
 # Instalando e carregando pacotes -----------------------------------------
 
@@ -41,8 +33,16 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
 #
 ########################################
 
-#Carregar base de dados: 
-censo <- as.data.frame(read_excel("fatores_e_ranking_final_2.xlsx"))
+# --
+# Carregando a base de dados
+
+## diretório de trabalho
+setwd("C:/Users/Renato/OneDrive/github/_tcc/2_cluster")
+
+
+# --
+#Carregar base de dados - modelo PCA final: 
+censo <- as.data.frame(read_excel("_dta/fatores_e_ranking_final_2.xlsx"))
 
 
 #pegando os dados que usaremos
@@ -69,8 +69,11 @@ fatores_pad %>% ggplot() +
              size = 3)
 
 # --
-#calcular as distancias da matriz utilizando a distancia euclidiana
-distancia <- dist(fatores_pad, method = "euclidean")
+# *******************************************************************************
+#calcular as distancias da matriz utilizando a distancia euclidiana ou  manhattan
+distancia <- dist(fatores_pad, method = "manhattan") # euclidean
+
+# *******************************************************************************
 
 ########################################
 #
@@ -86,7 +89,22 @@ distancia <- dist(fatores_pad, method = "euclidean")
 cluster_single.hierarquico <- hclust(distancia, method = "single")
 
 # Dendrograma
-plot(cluster_single.hierarquico, cex = 0.6, hang = -1)
+#plot(cluster_single.hierarquico, cex = 0.6, hang = -1)
+
+fviz_dend(x = cluster_single.hierarquico,
+          k = 2,
+          k_colors = c("orange", "darkorchid"),
+          color_labels_by_k = FALSE,
+          rect = TRUE,
+          rect_fill = TRUE,
+          lwd = 1,
+          ggtheme = theme_bw()) + 
+  ggtitle("Dendrograma - Single Linkage")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+# salvando em .png
+dev.print(file = '_out/figures/dendrograma_single.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 
 #criando grupos
 single_hierarquico <- cutree(cluster_single.hierarquico, k = 3)
@@ -98,6 +116,10 @@ single_hierarquico <- data.frame(single_hierarquico)
 #juntando com a base original
 single_fim <- cbind(fatores, single_hierarquico)
 
+# --
+#salvando xlsx modelo final
+write_xlsx(single_fim,"_out/output/single_cluster.xlsx")
+
 #visualizando em cores os clusters
 single_fim %>% ggplot() +
   geom_point(aes(x = Fator1,
@@ -106,6 +128,10 @@ single_fim %>% ggplot() +
              size = 3) + 
   ggtitle("Método hiearquico - single")+
   theme(plot.title = element_text(hjust = 0.5))
+
+# salvando em .png
+dev.print(file = '_out/figures/single.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 
 
 # --
@@ -116,7 +142,22 @@ single_fim %>% ggplot() +
 cluster_complete.hierarquico <- hclust(distancia, method = "complete")
 
 # Dendrograma
-plot(cluster_complete.hierarquico, cex = 0.6, hang = -1)
+# plot(cluster_complete.hierarquico, cex = 0.6, hang = -1)
+
+fviz_dend(x = cluster_complete.hierarquico,
+          k = 2,
+          k_colors = c("orange", "darkorchid"),
+          color_labels_by_k = FALSE,
+          rect = TRUE,
+          rect_fill = TRUE,
+          lwd = 1,
+          ggtheme = theme_bw()) + 
+  ggtitle("Dendrograma - Complete Linkage")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+# salvando em .png
+dev.print(file = '_out/figures/dendrograma_complete.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 
 #criando grupos
 complete_hierarquico <- cutree(cluster_complete.hierarquico, k = 3)
@@ -128,6 +169,10 @@ complete_hierarquico <- data.frame(complete_hierarquico)
 #juntando com a base original
 complete_fim <- cbind(fatores, complete_hierarquico)
 
+# --
+#salvando xlsx modelo final
+write_xlsx(complete_fim,"_out/output/complete_cluster.xlsx")
+
 #visualizando em cores os clusters
 complete_fim %>% ggplot() +
   geom_point(aes(x = Fator1,
@@ -136,6 +181,10 @@ complete_fim %>% ggplot() +
              size = 3) + 
   ggtitle("Método hiearquico - complete linkage")+
   theme(plot.title = element_text(hjust = 0.5))
+
+# salvando em .png
+dev.print(file = '_out/figures/complete.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 
 
 # --
@@ -146,7 +195,22 @@ complete_fim %>% ggplot() +
 cluster_average.hierarquico <- hclust(distancia, method = "average")
 
 # Dendrograma
-plot(cluster_average.hierarquico, cex = 0.6, hang = -1)
+# plot(cluster_average.hierarquico, cex = 0.6, hang = -1)
+
+fviz_dend(x = cluster_average.hierarquico,
+          k = 2,
+          k_colors = c("orange", "darkorchid"),
+          color_labels_by_k = FALSE,
+          rect = TRUE,
+          rect_fill = TRUE,
+          lwd = 1,
+          ggtheme = theme_bw()) + 
+  ggtitle("Dendrograma - Average Linkage")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+# salvando em .png
+dev.print(file = '_out/figures/dendrograma_average.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 
 #criando grupos
 average_hierarquico <- cutree(cluster_average.hierarquico, k = 3)
@@ -158,14 +222,22 @@ average_hierarquico <- data.frame(average_hierarquico)
 #juntando com a base original
 average_fim <- cbind(fatores, average_hierarquico)
 
+# --
+#salvando xlsx modelo final
+write_xlsx(average_fim,"_out/output/average_cluster.xlsx")
+
 #visualizando em cores os clusters
 average_fim %>% ggplot() +
   geom_point(aes(x = Fator1,
                  y = Fator2,
                  color = as.factor(average_hierarquico)),
              size = 3) + 
-  ggtitle("Método hiearquico - verage Linkage")+
+  ggtitle("Método hiearquico - Average Linkage")+
   theme(plot.title = element_text(hjust = 0.5))
+
+# salvando em .png
+dev.print(file = '_out/figures/average.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 
 # --
 ### distancia = Ward´s Method
@@ -174,7 +246,19 @@ average_fim %>% ggplot() +
 cluster_ward.hierarquico <- hclust(distancia, method = "ward.D")
 
 # Dendrograma
-plot(cluster_ward.hierarquico, cex = 0.6, hang = -1)
+#plot(cluster_ward.hierarquico, cex = 0.6, hang = -1)
+
+fviz_dend(x = cluster_ward.hierarquico,
+          k = 2,
+          k_colors = c("orange", "darkorchid"),
+          color_labels_by_k = FALSE,
+          rect = TRUE,
+          rect_fill = TRUE,
+          lwd = 1,
+          ggtheme = theme_bw()) + 
+  ggtitle("Dendrograma - Ward´s Method")+
+  theme(plot.title = element_text(hjust = 0.5))
+
 # salvando em .png
 dev.print(file = '_out/figures/dendrograma_ward.png',
           device = png, width = 1024, height = 768, res = 2*72)
@@ -189,8 +273,9 @@ ward_hierarquico <- data.frame(ward_hierarquico)
 #juntando com a base original
 ward_fim <- cbind(fatores, ward_hierarquico)
 
+# --
 #salvando xlsx modelo final
-write_xlsx(df,"_out/output/ward_cluster.xlsx")
+write_xlsx(ward_fim,"_out/output/ward_cluster.xlsx")
 
 #visualizando em cores os clusters
 ward_fim %>% ggplot() +
@@ -204,3 +289,7 @@ ward_fim %>% ggplot() +
 # salvando em .png
 dev.print(file = '_out/figures/ward.png',
           device = png, width = 1024, height = 768, res = 2*72)
+
+
+
+
