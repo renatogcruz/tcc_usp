@@ -33,7 +33,7 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
 
 # --
 ## diretório de trabalho
-setwd("C:/Users/Renato/OneDrive/github/_tcc/3_regressao")
+setwd("C:/Users/Renato/OneDrive/github/_tcc/3_multinomial")
 
 #--
 ## carregando dados
@@ -89,7 +89,10 @@ Qui2 <- function(x) {
 
 # --
 # Estatística geral do modelo_kmeans
-Qui2(modelo_kmeans)
+Qui2(modelo_kmeans) 
+
+# estat. diferente de zero, pelo menos um beta é estatist. diferente de zero 
+# (há modelo)
 
 # --
 # Na Regressão Logística Multinomial, o R quebra a lógica de relatórios que, 
@@ -120,6 +123,11 @@ zWald_modelo_kmeans <- (summary(modelo_kmeans)$coefficients /
 
 zWald_modelo_kmeans
 
+qnorm(0.025, lower.tail = F) 
+# ou os valores são maior que 1.96 ou maiores 
+# (ninguem fica dentro da região que contem o zero)
+
+
 # --
 # Porém, ainda faltam os respectivos p-values. Assim, os valores das probabilidades 
 # associadas às abscissas de uma distribuição normal-padrão é dada pela função
@@ -128,13 +136,16 @@ zWald_modelo_kmeans
 # normal padronizada (distribuição bicaudal). Desta forma, temos que:
 round((pnorm(abs(zWald_modelo_kmeans), lower.tail = F) * 2), 4)
 
+# --
+# ATENÇÃO **********************************************************************
+# verificar se são estatisticamente significantes
 
 
 # --
 # A EFETIVIDADE GERAL DO MODELO
 # Adicionando as prováveis ocorrências de evento apontadas pela modelagem à 
 # base de dados
-AtrasadoMultinomial$predicao <- predict(modelo_atrasado, 
+AtrasadoMultinomial$predicao <- predict(modelo_kmeans, 
                                      newdata = AtrasadoMultinomial, 
                                      type = "class")
 
