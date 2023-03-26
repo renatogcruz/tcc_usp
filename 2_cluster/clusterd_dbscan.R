@@ -36,8 +36,11 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
 # https://medium.com/towards-data-science/density-based-clustering-dbscan-vs-hdbscan-39e02af990c7
 ########################################
 
+## diretório de trabalho
+setwd("C:/Users/Renato/OneDrive/github/_tcc/2_cluster")
+
 #Carregar base de dados: 
-censo <- as.data.frame(read_excel("fatores_e_ranking_final_2.xlsx"))
+censo <- as.data.frame(read_excel("_dta/fatores_e_ranking_final_2.xlsx"))
 
 
 #pegando os dados que usaremos
@@ -70,22 +73,38 @@ fatores_pad %>% ggplot() +
 #Calcular o Cluster
 dbscan <- fpc::dbscan(fatores_pad,eps = 0.56, MinPts = 3)
 
-fatores_fim$dbscan <- dbscan$cluster
+fatores$dbscan <- dbscan$cluster
 
 #visualizando em cores os clusters
-fatores_fim %>% ggplot() +
+fatores %>% ggplot() +
   geom_point(aes(x = Fator1,
                  y = Fator2,
                  color = as.factor(dbscan)),
              size = 3) + 
   ggtitle("Método dbscan")+
   theme(plot.title = element_text(hjust = 0.5))
-
+# salvando em .png
+dev.print(file = '_out/figures/dbscan_plot.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 # --
 # Análise de variância de um fator (ANOVA)
 # ANOVA da variável 'fator1'
 summary(anova_fator1 <- aov(formula = Fator1 ~ dbscan,
-                                data = fatores_fim))
+                                data = fatores))
+
+sink(file = '_out/output/anova_fator1_dbscan.txt')
+print(summary(anova_fator1 <- aov(formula = Fator1 ~ dbscan, data = fatores)))
+sink()
+
 # ANOVA da variável 'fator2'
 summary(anova_fator2 <- aov(formula = Fator2 ~ dbscan,
-                            data = fatores_fim))
+                            data = fatores))
+
+sink(file = '_out/output/anova_fator2_dbscan.txt')
+print(summary(anova_fator2 <- aov(formula = Fator2 ~ dbscan, data = fatores)))
+sink()
+
+fatores
+# --
+#salvando xlsx modelo final
+write_xlsx(fatores,"_out/output/dbscan_cluster.xlsx")

@@ -72,7 +72,7 @@ fatores_pad %>% ggplot() +
 # *******************************************************************************
 #calcular as distancias da matriz utilizando a distancia euclidiana ou  manhattan
 distancia <- dist(fatores_pad, method = "manhattan") # euclidean
-
+distancia <- dist(fatores_pad, method = "euclidean") # euclidean
 # *******************************************************************************
 
 ########################################
@@ -117,6 +117,24 @@ single_hierarquico <- data.frame(single_hierarquico)
 single_fim <- cbind(fatores, single_hierarquico)
 
 # --
+# Análise de variância de um fator (ANOVA)
+# ANOVA da variável 'fator1'
+summary(anova_fator1 <- aov(formula = Fator1 ~ single_fim$single_hierarquico,
+                            data = single_fim))
+
+sink(file = '_out/output/anova_fator1_single_hierarquico.txt')
+print(summary(anova_fator1 <- aov(formula = Fator1 ~ single_fim$single_hierarquico, data = single_fim)))
+sink()
+
+# ANOVA da variável 'fator2'
+summary(anova_fator2 <- aov(formula = Fator2 ~ single_fim$single_hierarquico, data = single_fim))
+
+sink(file = '_out/output/anova_fator2_single_hierarquico.txt')
+print(summary(anova_fator2 <- aov(formula = Fator2 ~ single_fim$single_hierarquico, data = single_fim)))
+sink()
+
+
+# --
 #salvando xlsx modelo final
 write_xlsx(single_fim,"_out/output/single_cluster.xlsx")
 
@@ -129,9 +147,8 @@ single_fim %>% ggplot() +
   ggtitle("Método hiearquico - single")+
   theme(plot.title = element_text(hjust = 0.5))
 
-# salvando em .png
-dev.print(file = '_out/figures/single.png',
-          device = png, width = 1024, height = 768, res = 2*72)
+
+
 
 
 # --
@@ -226,6 +243,23 @@ average_fim <- cbind(fatores, average_hierarquico)
 #salvando xlsx modelo final
 write_xlsx(average_fim,"_out/output/average_cluster.xlsx")
 
+# --
+# Análise de variância de um fator (ANOVA)
+# ANOVA da variável 'fator1'
+summary(anova_fator1 <- aov(formula = Fator1 ~ average_fim$single_hierarquico,
+                            data = average_fim))
+
+sink(file = '_out/output/anova_fator1_average_fim_hierarquico.txt')
+print(summary(anova_fator1 <- aov(formula = Fator1 ~ average_fim$single_hierarquico, data = average_fim)))
+sink()
+
+# ANOVA da variável 'fator2'
+summary(anova_fator2 <- aov(formula = Fator2 ~ average_fim$single_hierarquico, data = average_fim))
+
+sink(file = '_out/output/anova_fator2_average_fim_hierarquico.txt')
+print(summary(anova_fator2 <- aov(formula = Fator2 ~ average_fim$single_hierarquico, data = average_fim)))
+sink()
+
 #visualizando em cores os clusters
 average_fim %>% ggplot() +
   geom_point(aes(x = Fator1,
@@ -235,9 +269,7 @@ average_fim %>% ggplot() +
   ggtitle("Método hiearquico - Average Linkage")+
   theme(plot.title = element_text(hjust = 0.5))
 
-# salvando em .png
-dev.print(file = '_out/figures/average.png',
-          device = png, width = 1024, height = 768, res = 2*72)
+
 
 # --
 ### distancia = Ward´s Method
@@ -273,9 +305,29 @@ ward_hierarquico <- data.frame(ward_hierarquico)
 #juntando com a base original
 ward_fim <- cbind(fatores, ward_hierarquico)
 
+
+# --
+# Análise de variância de um fator (ANOVA)
+# ANOVA da variável 'fator1'
+summary(anova_fator1 <- aov(formula = Fator1 ~ ward_fim$single_hierarquico,
+                            data = ward_fim))
+
+sink(file = '_out/output/anova_fator1_ward_fim_hierarquico.txt')
+print(summary(anova_fator1 <- aov(formula = Fator1 ~ ward_fim$single_hierarquico, data = ward_fim)))
+sink()
+
+# ANOVA da variável 'fator2'
+summary(anova_fator2 <- aov(formula = Fator2 ~ ward_fim$single_hierarquico, data = ward_fim))
+
+sink(file = '_out/output/anova_fator2_ward_fim_hierarquico.txt')
+print(summary(anova_fator2 <- aov(formula = Fator2 ~ ward_fim$single_hierarquico, data = ward_fim)))
+sink()
+
+
 # --
 #salvando xlsx modelo final
 write_xlsx(ward_fim,"_out/output/ward_cluster.xlsx")
+
 
 #visualizando em cores os clusters
 ward_fim %>% ggplot() +
@@ -285,11 +337,6 @@ ward_fim %>% ggplot() +
              size = 3) + 
   ggtitle("Método hiearquico - Ward´s Method")+
   theme(plot.title = element_text(hjust = 0.5))
-
-# salvando em .png
-dev.print(file = '_out/figures/ward.png',
-          device = png, width = 1024, height = 768, res = 2*72)
-
 
 
 

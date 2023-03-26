@@ -37,6 +37,7 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
 # --
 # Carregando a base de dados
 
+
 ## diretório de trabalho
 setwd("C:/Users/Renato/OneDrive/github/_tcc/2_cluster")
 
@@ -95,7 +96,7 @@ kmeans_fim <- cbind(fatores, grupo_kmeans3)
 
 # --
 #salvando xlsx modelo final
-write_xlsx(complete_fim,"_out/output/kmeans_cluster.xlsx")
+write_xlsx(kmeans_fim,"_out/output/kmeans_cluster.xlsx")
 
 
 #visualizando em cores os clusters
@@ -108,15 +109,24 @@ kmeans_fim %>% ggplot() +
   theme(plot.title = element_text(hjust = 0.5))
 
 # salvando em .png
-dev.print(file = '_out/figures/kmeans.png',
+dev.print(file = '_out/figures/kmeans_plot.png',
           device = png, width = 1024, height = 768, res = 2*72)
 
 
 # --
 # Análise de variância de um fator (ANOVA)
 # ANOVA da variável 'fator1'
-summary(anova_fator1 <- aov(formula = Fator1 ~ cluster.k3,
+summary(anova_fator1 <- aov(formula = Fator1 ~ cluster.k3$cluster,
                             data = kmeans_fim))
+
+sink(file = '_out/output/anova_fator1_kmeans.txt')
+print(summary(anova_fator1 <- aov(formula = Fator1 ~ cluster.k3$cluster,data = kmeans_fim)))
+sink()
+
 # ANOVA da variável 'fator2'
-summary(anova_fator2 <- aov(formula = Fator2 ~ cluster.k3,
+summary(anova_fator2 <- aov(formula = Fator2 ~ cluster.k3$cluster,
                             data = kmeans_fim))
+
+sink(file = '_out/output/anova_fator2_kmeans.txt')
+print(summary(anova_fator2 <- aov(formula = Fator2 ~ cluster.k3$cluster,data = kmeans_fim)))
+sink()

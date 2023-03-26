@@ -37,8 +37,11 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
 #
 ########################################
 
+## diretório de trabalho
+setwd("C:/Users/Renato/OneDrive/github/_tcc/2_cluster")
+
 #Carregar base de dados: 
-censo <- as.data.frame(read_excel("fatores_e_ranking_final_2.xlsx"))
+censo <- as.data.frame(read_excel("_dta/fatores_e_ranking_final_2.xlsx"))
 
 
 #pegando os dados que usaremos
@@ -54,6 +57,7 @@ fatores %>% ggplot() +
 #Transformar o nome 
 rownames(fatores) <- fatores[,1]
 fatores <- fatores[,-1]
+
 
 #Padronizar variaveis
 fatores_pad <- scale(fatores) # aqui não precisava fazer isso
@@ -71,11 +75,14 @@ fatores_pad %>% ggplot() +
 # Para executar o algoritmo HDBSCAN, simplesmente passe o conjunto de dados e o 
 # valor do parâmetro (único) 'minPts' para a função hdbscan
 cl <- hdbscan(fatores_pad, minPts = 5)
-cl
+
 
 # Os resultados 'flat' são armazenados no membro 'cluster'. Os pontos de ruído 
 # recebem um valor de 0, portanto, incremente em 1.
 plot(fatores_pad, col=cl$cluster+1, pch=20)
+# salvando em .png
+dev.print(file = '_out/figures/hdbscan_plot.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 
 # Os resultados correspondem a noções intuitivas de como os aglomerados 
 # 'semelhantes' podem parecer quando se manifestam em formas arbitrárias
@@ -98,7 +105,9 @@ cl$hc
 
 plot(cl$hc, main="Dendrograma - HDBSCAN Hierarchy") + 
   theme(plot.title = element_text(hjust = 0.5))
-
+# salvando em .png
+dev.print(file = '_out/figures/hdbscan_dendrograma.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 # --
 # DBSCAN* vs cortar a árvore HDBSCAN*
 # Como o nome indica, o fascinante sobre a hierarquia HDBSCAN* é que qualquer 
@@ -144,7 +153,9 @@ print(all(check == T))
 #plot(cl, gradient = c("yellow", "orange", "red", "blue"))
 plot(cl, gradient = c("purple", "blue", "green", "yellow"), show_flat = T)
 plot(cl, gradient = as.factor(cl$cluster+1), show_flat = T)
-
+# salvando em .png
+dev.print(file = '_out/figures/hdbscan_arvore_simplificada.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 
 # -- 
 # Pontuações de estabilidade de cluster
@@ -188,7 +199,9 @@ colors <- mapply(function(col, i) adjustcolor(col, alpha.f = cl$outlier_scores[i
                  palette()[cl$cluster+1], seq_along(cl$cluster))
 plot(fatores_pad, col=colors, pch=20)
 text(fatores_pad[top_outliers, ], labels = top_outliers, pos=3)
-
+# salvando em .png
+dev.print(file = '_out/figures/hdbscan_pontuacao_atipica_global_local.png',
+          device = png, width = 1024, height = 768, res = 2*72)
 
 
 cl$cluster
@@ -196,8 +209,27 @@ cl$cluster
 hdbscan_fim <- cbind(fatores, cl$cluster)
 
 # --
+# Análise de variância de um fator (ANOVA)
+# ANOVA da variável 'fator1'
+summary(anova_fator1 <- aov(formula = Fator1 ~ hdbscan_fim$`cl$cluster`,
+                            data = hdbscan_fim))
+
+sink(file = '_out/output/anova_fator1_hdbscan.txt')
+print(summary(anova_fator1 <- aov(formula = Fator1 ~ hdbscan_fim$`cl$cluster`, data = hdbscan_fim)))
+sink()
+
+# ANOVA da variável 'fator2'
+summary(anova_fator2 <- aov(formula = Fator2 ~ hdbscan_fim$`cl$cluster`,
+                            data = hdbscan_fim))
+
+sink(file = '_out/output/anova_fator2_hdbscan.txt')
+print(summary(anova_fator2 <- aov(formula = Fator2 ~ hdbscan_fim$`cl$cluster`, data = hdbscan_fim)))
+sink()
+
+
+# --
 #salvando xlsx modelo final
-write_xlsx(complete_fim,"_out/output/hdbscan_cluster.xlsx")
+write_xlsx(hdbscan_fim,"_out/output/hdbscan_cluster.xlsx")
 
 
 

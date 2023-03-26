@@ -1,0 +1,5 @@
+                   Df    Sum Sq   Mean Sq F value Pr(>F)    
+cluster.k3$cluster  1 123366401 123366401   463.4 <2e-16 ***
+Residuals          65  17304850    266228                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

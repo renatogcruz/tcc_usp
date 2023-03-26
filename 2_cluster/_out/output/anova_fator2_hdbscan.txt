@@ -1,0 +1,5 @@
+                         Df   Sum Sq  Mean Sq F value   Pr(>F)    
+hdbscan_fim$`cl$cluster`  1 87027689 87027689   105.5 3.07e-15 ***
+Residuals                65 53643562   825286                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

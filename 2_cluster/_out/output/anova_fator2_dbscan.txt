@@ -1,0 +1,5 @@
+            Df   Sum Sq  Mean Sq F value   Pr(>F)    
+dbscan       1 73625057 73625057   71.38 4.67e-12 ***
+Residuals   65 67046195  1031480                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
