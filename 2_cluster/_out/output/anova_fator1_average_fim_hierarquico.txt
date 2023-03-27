@@ -1,0 +1,5 @@
+                                Df  Sum Sq Mean Sq F value   Pr(>F)    
+average_fim$average_hierarquico  1 9603824 9603824   70.92 5.22e-12 ***
+Residuals                       65 8802206  135419                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

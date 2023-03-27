@@ -72,7 +72,7 @@ fatores_pad %>% ggplot() +
 # *******************************************************************************
 #calcular as distancias da matriz utilizando a distancia euclidiana ou  manhattan
 distancia <- dist(fatores_pad, method = "manhattan") # euclidean
-distancia <- dist(fatores_pad, method = "euclidean") # euclidean
+#distancia <- dist(fatores_pad, method = "euclidean") # euclidean
 # *******************************************************************************
 
 ########################################
@@ -186,9 +186,30 @@ complete_hierarquico <- data.frame(complete_hierarquico)
 #juntando com a base original
 complete_fim <- cbind(fatores, complete_hierarquico)
 
+
+# --
+# Análise de variância de um fator (ANOVA)
+# ANOVA da variável 'fator1'
+summary(anova_fator1 <- aov(formula = Fator1 ~ complete_fim$complete_hierarquico,
+                            data = complete_fim))
+
+sink(file = '_out/output/anova_fator1_complete_fim_hierarquico.txt')
+print(summary(anova_fator1 <- aov(formula = Fator1 ~ complete_fim$complete_hierarquico, data = complete_fim)))
+sink()
+
+# ANOVA da variável 'fator2'
+summary(anova_fator2 <- aov(formula = Fator2 ~ complete_fim$complete_hierarquico, data = complete_fim))
+
+sink(file = '_out/output/anova_fator2_complete_fim_hierarquico.txt')
+print(summary(anova_fator2 <- aov(formula = Fator2 ~ complete_fim$complete_hierarquico, data = complete_fim)))
+sink()
+
+
 # --
 #salvando xlsx modelo final
 write_xlsx(complete_fim,"_out/output/complete_cluster.xlsx")
+
+
 
 #visualizando em cores os clusters
 complete_fim %>% ggplot() +
@@ -199,9 +220,6 @@ complete_fim %>% ggplot() +
   ggtitle("Método hiearquico - complete linkage")+
   theme(plot.title = element_text(hjust = 0.5))
 
-# salvando em .png
-dev.print(file = '_out/figures/complete.png',
-          device = png, width = 1024, height = 768, res = 2*72)
 
 
 # --
@@ -246,18 +264,18 @@ write_xlsx(average_fim,"_out/output/average_cluster.xlsx")
 # --
 # Análise de variância de um fator (ANOVA)
 # ANOVA da variável 'fator1'
-summary(anova_fator1 <- aov(formula = Fator1 ~ average_fim$single_hierarquico,
+summary(anova_fator1 <- aov(formula = Fator1 ~ average_fim$average_hierarquico,
                             data = average_fim))
 
 sink(file = '_out/output/anova_fator1_average_fim_hierarquico.txt')
-print(summary(anova_fator1 <- aov(formula = Fator1 ~ average_fim$single_hierarquico, data = average_fim)))
+print(summary(anova_fator1 <- aov(formula = Fator1 ~ average_fim$average_hierarquico, data = average_fim)))
 sink()
 
 # ANOVA da variável 'fator2'
-summary(anova_fator2 <- aov(formula = Fator2 ~ average_fim$single_hierarquico, data = average_fim))
+summary(anova_fator2 <- aov(formula = Fator2 ~ average_fim$average_hierarquico, data = average_fim))
 
 sink(file = '_out/output/anova_fator2_average_fim_hierarquico.txt')
-print(summary(anova_fator2 <- aov(formula = Fator2 ~ average_fim$single_hierarquico, data = average_fim)))
+print(summary(anova_fator2 <- aov(formula = Fator2 ~ average_fim$average_hierarquico, data = average_fim)))
 sink()
 
 #visualizando em cores os clusters
@@ -309,18 +327,18 @@ ward_fim <- cbind(fatores, ward_hierarquico)
 # --
 # Análise de variância de um fator (ANOVA)
 # ANOVA da variável 'fator1'
-summary(anova_fator1 <- aov(formula = Fator1 ~ ward_fim$single_hierarquico,
+summary(anova_fator1 <- aov(formula = Fator1 ~ ward_fim$ward_hierarquico,
                             data = ward_fim))
 
 sink(file = '_out/output/anova_fator1_ward_fim_hierarquico.txt')
-print(summary(anova_fator1 <- aov(formula = Fator1 ~ ward_fim$single_hierarquico, data = ward_fim)))
+print(summary(anova_fator1 <- aov(formula = Fator1 ~ ward_fim$ward_hierarquico, data = ward_fim)))
 sink()
 
 # ANOVA da variável 'fator2'
-summary(anova_fator2 <- aov(formula = Fator2 ~ ward_fim$single_hierarquico, data = ward_fim))
+summary(anova_fator2 <- aov(formula = Fator2 ~ ward_fim$ward_hierarquico, data = ward_fim))
 
 sink(file = '_out/output/anova_fator2_ward_fim_hierarquico.txt')
-print(summary(anova_fator2 <- aov(formula = Fator2 ~ ward_fim$single_hierarquico, data = ward_fim)))
+print(summary(anova_fator2 <- aov(formula = Fator2 ~ ward_fim$ward_hierarquico, data = ward_fim)))
 sink()
 
 

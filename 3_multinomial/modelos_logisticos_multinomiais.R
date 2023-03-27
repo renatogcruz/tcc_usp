@@ -16,7 +16,8 @@ pacotes <- c("plotly",
              "nnet",
              "magick",
              "cowplot",
-             "readxl")
+             "readxl",
+             "MASS")
 
 if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
   instalador <- pacotes[!pacotes %in% installed.packages()]
@@ -37,11 +38,11 @@ setwd("C:/Users/Renato/OneDrive/github/_tcc/3_multinomial")
 
 #--
 ## carregando dados
-kmeans_cluster <- as.data.frame(read_excel("_dta/kmeans_cluster.xlsx"))
+hdbscan_cluster <- as.data.frame(read_excel("_dta/dbscan_cluster.xlsx"))
 
 #  -- 
 # Visualizando a base de dados kmeans_cluster
-kmeans_cluster %>%
+hdbscan_cluster %>%
   kable() %>%
   kable_styling(bootstrap_options = "striped", 
                 full_width = F, 
@@ -49,29 +50,33 @@ kmeans_cluster %>%
 
 #  -- 
 # transformando y em quali
-kmeans_cluster$complete_hierarquico <- factor(kmeans_cluster$complete_hierarquico)
+hdbscan_cluster$dbscan <- factor(hdbscan_cluster$dbscan)
 
 # --
 # Estatísticas descritivas univariadas da base de dados
-summary(kmeans_cluster)
-glimpse(kmeans_cluster)
+summary(hdbscan_cluster)
+glimpse(hdbscan_cluster)
 
 # --
 # Apontando a categoria de referência
-kmeans_cluster$complete_hierarquico <- relevel(kmeans_cluster$complete_hierarquico,
+hdbscan_cluster$dbscan <- relevel(hdbscan_cluster$dbscan,
                                                ref = 1)
 
 # --
 # Estimação do modelo - função multinom do pacote nnet
-modelo_kmeans <- multinom(formula = complete_hierarquico ~ Fator1 + Fator2, 
-                            data = kmeans_cluster)
+modelo_hdbscan <- multinom(formula = dbscan ~ Fator1 + Fator2, 
+                            data = hdbscan_cluster)
 
 
-# Parâmetros do modelo_kmeans
-summary(modelo_kmeans)
+# Parâmetros do modelo_hdbscan
+summary(modelo_hdbscan)
 
-# --# LL do modelo_kmeans
-logLik(modelo_kmeans)
+# --
+# salvar txt
+
+
+# --# LL do modelo_hdbscan
+logLik(modelo_hdbscan)
 
 # --
 # A função summ do pacote jtools não funciona para objetos de classe 'multinom'. 
@@ -88,8 +93,8 @@ Qui2 <- function(x) {
 }
 
 # --
-# Estatística geral do modelo_kmeans
-Qui2(modelo_kmeans) 
+# Estatística geral do modelo_hdbscan
+Qui2(modelo_hdbscan) 
 
 # estat. diferente de zero, pelo menos um beta é estatist. diferente de zero 
 # (há modelo)
@@ -118,13 +123,13 @@ Qui2(modelo_kmeans)
 # Para calcular as estatísticas z de Wald, há que se dividir os valores da 
 # seção 'Coefficients' pelos valores da seção 'Std. Errors.' Assim, temos que:  
 
-zWald_modelo_kmeans <- (summary(modelo_kmeans)$coefficients / 
-                            summary(modelo_kmeans)$standard.errors)
+zWald_modelo_hdbscan <- (summary(modelo_hdbscan)$coefficients / 
+                            summary(modelo_hdbscan)$standard.errors)
 
-zWald_modelo_kmeans
+zWald_modelo_hdbscan
 
 qnorm(0.025, lower.tail = F) 
-# ou os valores são maior que 1.96 ou maiores 
+# ou os valores são maiores que 1.96 ou menores -1.96 
 # (ninguem fica dentro da região que contem o zero)
 
 
@@ -134,7 +139,7 @@ qnorm(0.025, lower.tail = F)
 # pnorm(), considerando os valores em módulo - abs(). Após isso, multiplicamos 
 # por dois os valores obtidos para considerar os dois lados da distribuição
 # normal padronizada (distribuição bicaudal). Desta forma, temos que:
-round((pnorm(abs(zWald_modelo_kmeans), lower.tail = F) * 2), 4)
+round((pnorm(abs(zWald_modelo_hdbscan), lower.tail = F) * 2), 4)
 
 # --
 # ATENÇÃO **********************************************************************
@@ -145,7 +150,7 @@ round((pnorm(abs(zWald_modelo_kmeans), lower.tail = F) * 2), 4)
 # A EFETIVIDADE GERAL DO MODELO
 # Adicionando as prováveis ocorrências de evento apontadas pela modelagem à 
 # base de dados
-AtrasadoMultinomial$predicao <- predict(modelo_kmeans, 
+AtrasadoMultinomial$predicao <- predict(modelo_hdbscan, 
                                      newdata = AtrasadoMultinomial, 
                                      type = "class")
 
@@ -336,3 +341,8 @@ ggplotly(
 )
 
 
+# --
+# TRANSFORMAçÃO DE BOX-COX
+# Para calcular o lambda de Box-Cox
+lambda_BC <- powerTransform(hdbscan_cluster$Fator1)
+lambda_BC
