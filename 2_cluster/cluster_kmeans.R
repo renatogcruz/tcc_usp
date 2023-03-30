@@ -81,6 +81,7 @@ fviz_nbclust(fatores_pad, kmeans, method = "wss", k.max = 5) +
   ggtitle("Método de Elbow - k-means")+
   theme(plot.title = element_text(hjust = 0.5))
 
+
 # salvando em .png
 dev.print(file = '_out/figures/elbow_kmeans.png',
           device = png, width = 1024, height = 768, res = 2*72)

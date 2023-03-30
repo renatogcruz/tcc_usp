@@ -38,7 +38,7 @@ library(caret)
 
 ## mudando diretório de trabalho
 ## Nota: lembre-se de sempre alterar esse caminho!
-setwd("~/Documents/Especialização Estatística/7. Multivariada - 20221112-20221217/Trabalho/Bases de dados/AF/code")
+setwd("C:/Users/Renato/OneDrive/github/_tcc/1_b_af")
 
 ## carregando funções auxiliares
 source("_src/src.R")

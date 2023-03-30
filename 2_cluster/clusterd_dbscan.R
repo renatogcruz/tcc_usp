@@ -108,3 +108,12 @@ fatores
 # --
 #salvando xlsx modelo final
 write_xlsx(fatores,"_out/output/dbscan_cluster.xlsx")
+
+
+# https://cran.r-project.org/web/packages/dbscan/readme/README.html
+x <- as.matrix(fatores)
+pairs(x, col = dbscan$cluster + 1L)
+opt <- optics(x, eps = 1, minPts = 3)
+
+opt <- extractDBSCAN(opt, eps_cl = 0.4)
+plot(opt)

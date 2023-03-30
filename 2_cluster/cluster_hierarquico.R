@@ -103,6 +103,10 @@ fviz_dend(x = cluster_single.hierarquico,
   theme(plot.title = element_text(hjust = 0.5))
 
 # salvando em .png
+dev.print(file = '_out/figures/dendrograma_single_TESTEEEEE.png',
+          device = png)
+
+# salvando em .png
 dev.print(file = '_out/figures/dendrograma_single.png',
           device = png, width = 1024, height = 768, res = 2*72)
 

@@ -46,7 +46,7 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
 # Carregando a base de dados
 
 ## diretório de trabalho
-setwd("C:/Users/Renato/OneDrive/github/_tcc/1_a_pca/estudo_composicoes")
+setwd("C:/Users/Renato/OneDrive/github/_tcc/1_b_af")
 
 #--
 ## carregando funções auxiliares
@@ -56,7 +56,7 @@ source("_src/src.R")
 ## carregando dados: GeoSES Belo Horizonte (intra-municipal)
 ## - indicadores do censo por ÁREA DE PONDERAÇÃO
 ## - os dados são carregados no objeto "dta"
-dta = read.csv("_dta/geoSES_BH_IM.csv")
+dta = read.csv("_dta/geoSES_SP_IM.csv")
 
 
 # --
@@ -206,7 +206,12 @@ df <- data.frame(cargas_fatoriais)
 df['Comunalidade'] = rowSums(cargas_fatoriais ^ 2)
 write_xlsx(df,"_out/output/cargas_fatoriais_comunalidades.xlsx")
 
-
+hist(df)
+#para visualizar no plano
+df %>% ggplot() +
+  geom_point(aes(x = PC1,
+                 y = PC2),
+             size = 3)
 
 # Plotagem das Cargas Fatoriais
 data.frame(cargas_fatoriais) %>%
@@ -321,6 +326,11 @@ NEW = X %>% relocate(ID, .before = P_SEM_INST)
 
 write_xlsx(NEW,"_out/output/fatores_e_ranking_final.xlsx")
 
+#para visualizar no plano
+NEW %>% ggplot() +
+  geom_point(aes(x = Fator1,
+                 y = Fator2),
+             size = 3)
 
 # --
 # Teste de Bartlett de Esfericidade
@@ -665,18 +675,7 @@ Bartlett.sphericity.test <- function(x)
 # Resultado do Teste de Esfericidade:
 Bartlett.sphericity.test(X)
 
-sink(file = '_out/output/teste_esfericidade_2.txt')
-print(Bartlett.sphericity.test(X))
-sink()
-
-
 # --
 # Gráfico Colorido com as Contribuições
 fviz_pca_var(res_ACP, col.var="contrib", gradient.cols = c("red","yellow","green"), repel = TRUE # Avoid text overlapping) 
 )
-
-
-
-
-
-
