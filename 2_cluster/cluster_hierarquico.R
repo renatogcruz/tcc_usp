@@ -4,6 +4,27 @@
 #
 ########################################
 
+library(ggplot2)
+library(vegan)
+data(iris)
+df = data.frame(iris)
+df$Species = NULL
+
+library(vegan)
+ED10 = vegdist(df,method="euclidean")
+EucWard_10 = hclust(ED10,method="ward.D2")
+hcd_ward10 = as.dendrogram(EucWard_10)
+
+plot(hcd_ward10)
+
+
+library(dendextend)
+dend <- hcd_ward10
+dend <- color_branches(dend, k = 3)
+dend <- color_labels(dend, k = 3)
+plot(dend)
+
+
 # --
 # Instalando e carregando pacotes -----------------------------------------
 
@@ -90,9 +111,10 @@ cluster_single.hierarquico <- hclust(distancia, method = "single")
 
 # Dendrograma
 #plot(cluster_single.hierarquico, cex = 0.6, hang = -1)
+fviz_dend(x = cluster_single.hierarquico)
 
 fviz_dend(x = cluster_single.hierarquico,
-          k = 2,
+          k = 3,
           k_colors = c("orange", "darkorchid"),
           color_labels_by_k = FALSE,
           rect = TRUE,
@@ -119,6 +141,60 @@ single_hierarquico <- data.frame(single_hierarquico)
 
 #juntando com a base original
 single_fim <- cbind(fatores, single_hierarquico)
+
+
+
+
+
+#----------------------------------------------------------------------------
+
+
+# salvando os scores da 1ª componente principal no objeto sf
+sf.obj$`Comp. 1` = - PCA$scores[, 1] # muda-se aqui
+
+# classificando em quintis
+sf.obj$`Comp. 1_cat` = quant.class(single_fim$single_hierarquico, c = 3)
+
+
+# invocando ggplot
+p = ggplot(data = sf.obj) + 
+  # raster geom
+  geom_sf(aes(fill = `Comp. 1_cat`)) +
+  # tema
+  theme(
+    # legenda
+    legend.title = element_text(face = 'bold'),
+    legend.key = element_blank(),
+    legend.background = element_rect(colour = 'black'),
+    # painéis
+    panel.background = element_blank(),
+    panel.border = element_rect(colour = 'black', fill = NA),
+    # título
+    plot.title = element_text(hjust = 0.5, face = 'bold')
+  ) +
+  # título
+  ggtitle(paste('Scores da 1ª Componente da PCA')) +
+  # legenda
+  guides(fill = guide_legend('Comp. 1')) +
+  # paleta de cores
+  scale_fill_brewer(palette = 'green') + #'RdYlBu'
+  # barra de escala (ggspatial)
+  ggspatial::annotation_scale() +
+  # rosa dos ventos (ggsn)
+  ggsn::north(sf.obj)
+
+print(p)
+
+
+
+#----------------------------------------------------------------------------
+
+
+
+
+
+
+
 
 # --
 # Análise de variância de um fator (ANOVA)
@@ -164,9 +240,10 @@ cluster_complete.hierarquico <- hclust(distancia, method = "complete")
 
 # Dendrograma
 # plot(cluster_complete.hierarquico, cex = 0.6, hang = -1)
+fviz_dend(x = cluster_complete.hierarquico)
 
 fviz_dend(x = cluster_complete.hierarquico,
-          k = 2,
+          k = 3,
           k_colors = c("orange", "darkorchid"),
           color_labels_by_k = FALSE,
           rect = TRUE,
@@ -235,9 +312,10 @@ cluster_average.hierarquico <- hclust(distancia, method = "average")
 
 # Dendrograma
 # plot(cluster_average.hierarquico, cex = 0.6, hang = -1)
+fviz_dend(x = cluster_average.hierarquico)
 
 fviz_dend(x = cluster_average.hierarquico,
-          k = 2,
+          k = 3,
           k_colors = c("orange", "darkorchid"),
           color_labels_by_k = FALSE,
           rect = TRUE,

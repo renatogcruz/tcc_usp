@@ -676,7 +676,41 @@ fviz_pca_var(res_ACP, col.var="contrib", gradient.cols = c("red","yellow","green
 )
 
 
+# --------------------------------------------------------------------------
+## mapa: scores da PCA
+# visualizando os 6 primeiros scores de cada componente
 
-
+head(PCA$scores)
+# salvando os scores da 1ª componente principal no objeto sf
+sf.obj$`Comp. 1` = PCA$scores[, 1]
+# classificando em quintis
+sf.obj$`Comp. 1_cat` = quant.class(sf.obj$`Comp. 1`, c = 5)
+# invocando ggplot
+p = ggplot(data = sf.obj) + 
+  # raster geom
+  geom_sf(aes(fill = `Comp. 1_cat`)) +
+  # tema
+  theme(
+    # legenda
+    legend.title = element_text(face = 'bold'),
+    legend.key = element_blank(),
+    legend.background = element_rect(colour = 'black'),
+    # painéis
+    panel.background = element_blank(),
+    panel.border = element_rect(colour = 'black', fill = NA),
+    # título
+    plot.title = element_text(hjust = 0.5, face = 'bold')
+  ) +
+  # título
+  ggtitle(paste('Scores da 1ª Componente da PCA: Educação')) +
+  # legenda
+  guides(fill = guide_legend('Comp. 1')) +
+  # paleta de cores
+  scale_fill_brewer(palette = 'RdYlBu') +
+  # barra de escala (ggspatial)
+  ggspatial::annotation_scale() +
+  # rosa dos ventos (ggsn)
+  ggsn::north(sf.obj)
+print(p)
 
 
