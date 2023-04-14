@@ -131,3 +131,65 @@ summary(anova_fator2 <- aov(formula = Fator2 ~ cluster.k3$cluster,
 sink(file = '_out/output/anova_fator2_kmeans.txt')
 print(summary(anova_fator2 <- aov(formula = Fator2 ~ cluster.k3$cluster,data = kmeans_fim)))
 sink()
+
+
+# --
+## PLOT CLUSTER IN SHAPEFILE
+## carregando shapefile de BH 
+# - necessário para produzir os mapas
+merge.shp = raster::shapefile(
+  x = paste0('C:/Users/Renato/OneDrive/github/_tcc/2_cluster/_out/shapefiles/belo_horizonte_AP.shp'))
+
+
+# convertendo para sf
+sf.obj = st_as_sf(merge.shp)
+
+#Carregar base de dados - modelo PCA final: 
+kmeans_fim <- as.data.frame(read_excel("C:/Users/Renato/OneDrive/github/_tcc/2_cluster/_out/output/kmeans_cluster.xlsx"))
+
+#summary(kmeans_fim)
+#glimpse(kmeans_fim)
+
+## salvando os scores da 1ª componente principal no objeto sf
+sf.obj$`Comp. 1` = kmeans_fim$`Comp. 1`  # muda-se aqui
+
+# classificando em quintis
+sf.obj$`Comp. 1_cat` = kmeans_fim$`Comp. 1_cat`#quant.class(sf.obj$`Comp. 1`, c = 3)
+
+# invocando ggplot
+p = ggplot(data = sf.obj) + 
+  # raster geom
+  geom_sf(aes(fill = `Comp. 1_cat`)) +
+  # tema
+  theme(
+    # legenda
+    legend.title = element_text(face = 'bold'),
+    legend.key = element_blank(),
+    legend.background = element_rect(colour = 'black'),
+    # painéis
+    panel.background = element_blank(),
+    panel.border = element_rect(colour = 'black', fill = NA),
+    # título
+    plot.title = element_text(hjust = 0.5, face = 'bold')
+  ) +
+  # título
+  ggtitle(paste('Scores da 1ª Componente da PCA')) +
+  # legenda
+  guides(fill = guide_legend('Comp. 1')) +
+  # paleta de cores
+  scale_fill_brewer(palette = 'PuBu') + #'RdYlBu'
+  # barra de escala (ggspatial)
+  ggspatial::annotation_scale() +
+  # rosa dos ventos (ggsn)
+  ggsn::north(sf.obj)
+
+print(p)
+
+# https://spatialanalysis.github.io/workshop-notes/spatial-clustering.html
+# https://stackoverflow.com/questions/62435609/plot-shapefile-with-ggplot2
+# https://github.com/renatogcruz/spatial_analysis_algorithms/blob/main/SCRIPT%20-%20Modos%20de%20Visualiza%C3%A7%E2%95%9Eo.R
+
+
+
+
+
