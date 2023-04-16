@@ -37,7 +37,7 @@ dta = read.csv("_dta/geoSES_BH_IM.csv")
 #--
 ## visualizando os dados
 ## (e checando para ver se está tudo OK)
-View(dta)
+#View(dta)
 
 #--
 # checando IDs/unidades de observação (áreas de ponderação/APs)
@@ -161,7 +161,10 @@ dev.print(file = '_out/figures/figScreePlot_EDUCATION.png',
 head(PCA$scores)
 
 # salvando os scores da 1ª componente principal no objeto sf
-sf.obj$`Comp. 1` = - PCA$scores[, 1] # muda-se aqui
+sf.obj$`Comp. 1` = -PCA$scores[, 1] # muda-se aqui
+
+#summary(PCA$scores[, 1])
+#glimpse(PCA$scores[, 1])
 
 # classificando em quintis
 sf.obj$`Comp. 1_cat` = quant.class(sf.obj$`Comp. 1`, c = 3)
@@ -187,7 +190,7 @@ p = ggplot(data = sf.obj) +
   # legenda
   guides(fill = guide_legend('Comp. 1')) +
   # paleta de cores
-  scale_fill_brewer(palette = 'green') + #'RdYlBu'
+  scale_fill_brewer(palette = 'PuBu') + #'RdYlBu'
   # barra de escala (ggspatial)
   ggspatial::annotation_scale() +
   # rosa dos ventos (ggsn)
