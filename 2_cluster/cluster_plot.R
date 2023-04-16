@@ -48,7 +48,7 @@ sf.obj = st_as_sf(merge.shp)
 # ---------------------------
 # kmeans_cluster
 #Carregar base de dados - modelo kmeans_cluster: 
-kmeans_fim <- as.data.frame(read_excel("C:/Users/Renato/OneDrive/github/_tcc/2_cluster/_out/output/plot_shapefile/kmeans_cluster.xlsx"))
+kmeans_fim <- as.data.frame(read_excel("C:/Users/Renato/OneDrive/github/_tcc/2_cluster/_out/output/plot_shapefile/kmeans_cluster2.xlsx"))
 
 #summary(kmeans_fim)
 #glimpse(kmeans_fim)
@@ -246,7 +246,7 @@ dev.print(file = '_out/figures/dbscan_shapefile.png',
 # ---------------------------
 # hdbscan_cluster
 #Carregar base de dados - modelo hdbscan_cluster: 
-modelo <- as.data.frame(read_excel("C:/Users/Renato/OneDrive/github/_tcc/2_cluster/_out/output/plot_shapefile/hdbscan_cluster.xlsx"))
+modelo <- as.data.frame(read_excel("C:/Users/Renato/OneDrive/github/_tcc/2_cluster/_out/output/plot_shapefile/hdbscan_cluster2.xlsx"))
 
 modelo$cluster
 ## salvando os scores da 1ª componente principal no objeto sf
