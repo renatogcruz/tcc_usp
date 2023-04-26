@@ -78,8 +78,10 @@ fatores_pad %>% ggplot() +
 ## Apresenta a variação total dentro dos clusters para várias nº de clusters
 ## Em geral, quando há a dobra é um indício do número ótimo de clusters
 fviz_nbclust(fatores_pad, kmeans, method = "wss", k.max = 5) + 
+  theme(axis.text.x = element_text(size = 12))  +
+  geom_point(group = 1, size = 3, color = "blue")
   ggtitle("Método de Elbow - k-means")+
-  theme(plot.title = element_text(hjust = 0.5))
+    theme(plot.title = element_text(hjust = 0.5))
 
 
 # salvando em .png

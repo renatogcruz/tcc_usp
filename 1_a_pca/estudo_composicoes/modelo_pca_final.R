@@ -462,6 +462,19 @@ afpc$center
 # --
 # Visualizando os pesos que cada variável tem em cada componente principal 
 # obtido pela PCA
+
+data.frame(afpc$rotation[,1:2]) %>%
+  mutate(var = names(dta[, lab])) %>% 
+  melt(id.vars = "var") %>%           # NÃO FUNCIONA????????????
+  mutate(var = factor(var)) %>%
+  ggplot(aes(x = var, y = value, fill = var)) +
+  geom_bar(stat = "identity", color = "black") +
+  facet_wrap(~variable) +
+  labs(x = NULL, y = NULL, fill = "Legenda:") +
+  scale_fill_viridis_d() +
+  theme_bw()
+
+
 data.frame(afpc$rotation[,1:2]) %>%
   mutate(var = names(dta[, lab])) %>% 
   melt(id.vars = "var") %>%           # NÃO FUNCIONA????????????

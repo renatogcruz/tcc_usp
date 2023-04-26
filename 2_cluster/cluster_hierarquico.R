@@ -111,14 +111,14 @@ cluster_single.hierarquico <- hclust(distancia, method = "single")
 
 # Dendrograma
 #plot(cluster_single.hierarquico, cex = 0.6, hang = -1)
-fviz_dend(x = cluster_single.hierarquico)
+fviz_dend(x = cluster_single.hierarquico, k=3, lwd=1)
 
 fviz_dend(x = cluster_single.hierarquico,
           k = 3,
-          k_colors = c("orange", "darkorchid"),
-          color_labels_by_k = FALSE,
+          k_colors = c("orange", "darkorchid", "red"),
+          color_labels_by_k = T,
           rect = TRUE,
-          rect_fill = TRUE,
+          rect_fill = FALSE,
           lwd = 1,
           ggtheme = theme_bw()) + 
   ggtitle("Dendrograma - Single Linkage")+
@@ -239,8 +239,8 @@ single_fim %>% ggplot() +
 cluster_complete.hierarquico <- hclust(distancia, method = "complete")
 
 # Dendrograma
-# plot(cluster_complete.hierarquico, cex = 0.6, hang = -1)
-fviz_dend(x = cluster_complete.hierarquico)
+#plot(cluster_complete.hierarquico, cex = 0.6, hang = -1)
+fviz_dend(x = cluster_complete.hierarquico, k=3, lwd=1)
 
 fviz_dend(x = cluster_complete.hierarquico,
           k = 3,
@@ -312,7 +312,7 @@ cluster_average.hierarquico <- hclust(distancia, method = "average")
 
 # Dendrograma
 # plot(cluster_average.hierarquico, cex = 0.6, hang = -1)
-fviz_dend(x = cluster_average.hierarquico)
+fviz_dend(x = cluster_average.hierarquico, k=3, lwd=1.1)
 
 fviz_dend(x = cluster_average.hierarquico,
           k = 3,
